@@ -1,42 +1,175 @@
 
-import { createSignal } from "solid-js";
+import { createSignal, createEffect } from "solid-js";
 import './Page.css';
 import './assets/funnel.svg';
 import './assets/add-article.png';
+import 'https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js';
 
+
+const cl = console.log;
+const ONLY = 0;
+
+const urlFetch = 'http://localhost:4000/web/index.php?r=article/index';
+const urlStore = "http://localhost:4000/web/index.php?r=article/storeart"
 
 const state =
 {
-	mode: 'list', // 'edit',
-	selectCategoriesSide: 'unfolded',
-	storedTitle: 'Enter new article name there',
-	storedAuthorname: 'Enter your name there',
+	storedTitle: 'Enter new article title here',
+	storedAuthorname: 'Enter your name here',
 	storedText: '',
-	addCategory:
-		[
-			{ id: 'id1', name: 'name1', label: 'Category 1', value: 'value1', checked: false },
-			{ id: 'id2', name: 'name2', label: 'Category 2', value: 'value2', checked: true }
-		],
-	hasCategory:
-		[
-			{ id: 'id3', name: 'name3', label: 'Category 3', value: 'value3', checked: false },
-			{ id: 'id4', name: 'name4', label: 'Category 4', value: 'value4', checked: true }
-		],
 }
 
 const [stateGet, stateSet] = createSignal(state);
 
 
-function Page() {
-	const [modeGet, modeSet] = createSignal('list');
-	const [selectCategoriesSideGet, selectCategoriesSideSet] =
-		createSignal('unfolded');
 
-	const isList = () => modeGet() === 'list';
-	const categories = () =>
-		isList() ? stateGet().hasCategory : stateGet().addCategory;
+
+function Page(props) {
+	const stub =
+	{
+		items: [],
+		_meta:
+		{
+			pageCount: 0,
+			currentPage: 1
+		}
+	};
+	const articles = props.data || stub;
+
+	/** Пробуем сгенерировать статьи, если таблица пуста */
+	if (!articles._meta.pageCount || !articles.items.length)
+		initTable();
+
+	const [articlesGet, articlesSet] = createSignal(articles);
+
+	// Init Загружаем страницу
+	const loadArticles = (pageNum = '') => $.ajax({
+		url: urlFetch + pageNum,
+		method: 'GET',
+		dataType: 'json',
+	}).done(data => { articlesSet(data) });
+
+	const [modeGet, modeSet] = createSignal('list');
+
+	const [selectCategoriesSideGet, selectCategoriesSideSet] =
+		createSignal('folded');
+
 	const drawSelectCategoriesSide = () => modeGet() === 'edit' ||
 		selectCategoriesSideGet() !== 'folded';
+
+	// Текущие настройки фильтрации
+	const hasCategoryMgr = createSignalObj({
+		id1: { label: 'Category 1', checked: false },
+		id2: { label: 'Category 2', checked: true },
+	});
+
+	/** Копирует настройки фильтрации */
+	const selectedCategories = () => {
+		const has = hasCategoryMgr.get();
+		const ids = Object.keys(has);
+		const copy = {};
+
+		for (const id of ids)
+			copy[id] = { ...(has[id] || {}) };
+
+		return copy;
+	};
+
+	/** 
+	 *  Копируем настоящие настройки фильтрации в ещё не применённые,
+	 *  отображаемые на панели настроек
+	 */
+	const editCategoryMgr = createSignalObj(selectedCategories());
+
+	// Какие категории добавить в новую статью из тех, что есть
+	// По умолчанию никакие
+	const addCategoryMgr = createSignalObj({
+		id3: { label: 'Category 3', checked: false },
+		id4: { label: 'Category 4', checked: false },
+	});
+
+	const isList = () => modeGet() === 'list';
+
+	const categories = () =>
+		isList() ? editCategoryMgr : addCategoryMgr;
+
+	/** Этот вариант допускает множественный выбор категорий */
+	/* 
+	const updateCategories = (categories, newCategories) => {
+		const update = categories.get();
+		const newCategoriyIds = Object.keys(newCategories);
+
+		for (const id of newCategoriyIds)
+			if (update[id])
+				update[id].checked = newCategories[id].checked || false;
+
+		categories.set(update);
+	};
+	*/
+
+	/** Этот вариант не допускает множественный выбор категорий */
+	const updateCategoriesLight = (categories, idNew) => {
+		const source = categories.get();
+		const ids = Object.keys(source);
+		const dest = {};
+
+		for (const id of ids) {
+			dest[id] = {};
+			dest[id].label = source[id].label;
+
+			if (id !== idNew)
+				dest[id].checked = false;
+			else
+				dest[id].checked = true;
+		}
+		categories.set(dest);
+	};
+
+	/**
+	 * В этом варианте ресета обнуляем настройки,
+	 * а не восстанавливаем их
+	 */
+	const resetCategoriesEdition = () => {
+		editCategoryMgr.set(selectedCategories());
+		selectCategoriesSideSet('folded');
+	}
+
+	/**
+	 * В этом варианте ресета восстанавливаем настройки,
+	 * а не обнуляем их
+	 */
+	const restoreCategoriesEdition = () => {
+		editCategoryMgr.set(selectedCategories());
+		selectCategoriesSideSet('folded');
+	}
+
+	const cancelCategoriesEdition = () => {
+		editCategoryMgr.set(selectedCategories());
+		selectCategoriesSideSet('folded');
+	}
+
+	const applyCategoriesInEdition = () => {
+		hasCategoryMgr.set(editCategoryMgr.get());
+		selectCategoriesSideSet('folded');
+	}
+
+
+	function storeArticle(title, category_id, category_title, author, text) {
+		_storeArticle(title, category_id, category_title, author, text);
+	}
+
+	function pageNumBtnClickHandler(evt) {
+		const pageNum = evt.target.innerText || 1;
+		loadArticles('&page=' + pageNum);
+	}
+
+
+	// setTimeout(() => {
+	// 	const art = articlesGet();
+	// 	art.items[ONLY].title = 'zxcv';
+	// 	articlesSet({...art});
+	// }, 5000);
+
 
 	return (
 		<div className='page'>
@@ -46,15 +179,29 @@ function Page() {
 				selectCategoriesSideGet={selectCategoriesSideGet}
 				modeGet={modeGet}
 				modeSet={modeSet}
+				scrollUp={noop}
+				articles={articlesGet}
+				pageNumBtnClickHandler={pageNumBtnClickHandler}
 			/> : ''}
 			{drawSelectCategoriesSide() ?
-				<SelectCategoriesSide categories={categories}
+				<SelectCategoriesSide categories={categories()}
 					mode={modeGet}
 					draw={drawSelectCategoriesSide}
+					upd={updateCategoriesLight.bind(null, categories())}
+					cancel={cancelCategoriesEdition}
+					reset={resetCategoriesEdition}
+					apply={applyCategoriesInEdition}
 				/> : ''}
-			{isList() ? <List categories={categories} /> :
-				<NewArticle text={modeGet()} title={stateGet().storedTitle}
-					author={stateGet().storedAuthorname} modeSet={modeSet}
+			{isList() ?
+				<List categories={categories} articlesGet={articlesGet}
+					articlesSet={articlesSet}
+				/> :
+				<NewArticle text={stateGet().storedText}
+					title={stateGet().storedTitle}
+					author={stateGet().storedAuthorname}
+					modeSet={modeSet}
+					categories={categories()}
+					send={storeArticle}
 				/>}
 
 			{isList() ? <PaginationBar
@@ -62,6 +209,9 @@ function Page() {
 				selectCategoriesSideGet={selectCategoriesSideGet}
 				modeGet={modeGet}
 				modeSet={modeSet}
+				scrollUp={scrollUp}
+				articles={articlesGet}
+				pageNumBtnClickHandler={pageNumBtnClickHandler}
 			/> : ''}
 			<Footer />
 		</div>);
@@ -97,34 +247,36 @@ function Footer() {
 
 
 function List(props) {
-	const articles =
-		[
-			<Article text={loremIpsum} title='First article name'
-				author='Alexander Stadnichenko' dateTime='6 November 2022'
-				categories={props.categories()} />,
-			<Article text={loremIpsum} title='Second article name'
-				author='Alexander Stadnichenko' dateTime='6 November 2022'
-				categories={props.categories()} />
-		];
+	// const articles = props.articlesGet() || {};
+	// const items = articles.items || [];
+
+	const items = () => props.articlesGet().items;
+
 	return (
 		<div className='list list_theme_1'>
 			<div className='list list__body_theme_1'>
-				{articles.map(itm => itm)}
+				{items().map(itm =>
+					<Article text={itm.article}
+						title={itm.title}
+						author={itm.author}
+						dateTime={itm.published_at}
+						categories={props.categories()} />
+				)}
 			</div>
 		</div>);
 }
 
 function NewArticle(props) {
 	return (
-		<div>
-			<div className='new-article new-article_theme_1'>
-				<div className='new-article new-article__body_theme_1'>
-					<EditableArticle text={props.text}
-						title={props.title} author={props.author}
-						dateTime='6 November 2022'
-						modeSet={props.modeSet}
-					/>
-				</div>
+		<div className='new-article new-article_theme_1'>
+			<div className='new-article new-article__body_theme_1'>
+				<EditableArticle text={props.text}
+					title={props.title}
+					author={props.author}
+					modeSet={props.modeSet}
+					categories={props.categories}
+					send={props.send}
+				/>
 			</div>
 		</div>
 
@@ -137,20 +289,47 @@ function EditableArticle(props) {
 			<article className='editable-article article_theme_1 
 				editable-article_theme_1 article_corner_rounded_3'>
 
-				<EditableCredits title={props.title} author={props.author}
-					dateTime={props.dateTime} />
+				<EditableCredits title={props.title} author={props.author} />
 
 				<textarea type='text' className='editable-article editable-article__body
 					editable-article__body_theme_1' value={props.text}
 					placeholder='Start article writing there...' />
 
-				<MenuSend modeSet={props.modeSet} />
+				<MenuSend modeSet={props.modeSet}
+					categories={props.categories}
+					send={props.send}
+				/>
 			</article>
 		</div>);
 }
 
 
 function MenuSend(props) {
+
+	const handleSendClick = evt => {
+		const article = evt.target.parentNode.parentNode.parentNode
+		const title = article
+			.getElementsByClassName('credits__editable-title')[ONLY].value;
+		const author = article
+			.getElementsByClassName('credits__editable-author-name')[ONLY].value;
+		const text = article.getElementsByTagName('textarea')[ONLY].value;
+		const categories = props.categories.get();
+		const ids = Object.keys(categories);
+
+		let category_id = 0;
+		for (const id of ids)
+			if (categories[id].checked)
+				category_id = id;
+
+		let category_title = categories[category_id] || {};
+		category_title = category_title.label || 'none';
+
+		if (category_title === 'none')
+			category_id = 0;
+
+		props.send(title, category_id, category_title, author, text);
+	};
+
 	return (
 		<div className='menu-send menu-send_theme_1'>
 			<div className='menu-send menu-send__buttons menu-send__buttons_theme_1'>
@@ -161,7 +340,7 @@ function MenuSend(props) {
 					Cancel
 				</div>
 				<div className='menu-send menu-send__button_theme_1 
-					menu-send__button-send_theme_1'>
+					menu-send__button-send_theme_1' onClick={handleSendClick}>
 
 					Send
 				</div>
@@ -175,7 +354,7 @@ function EditableCredits(props) {
 		<div className='credits-container'>
 			<header className='credits credits__theme_1'>
 				<input placeholder={props.title} className='credits credits__title 
-					credits__editable-title_theme_1' />
+					credits__editable-title credits__editable-title_theme_1' />
 				<div className='credits credits__info credits__info_theme_1'>
 					<div className='credits credits__author credits__author_theme_1'>
 
@@ -283,24 +462,26 @@ function Tag(props) {
 
 
 function PaginationBar(props) {
-	const numbeRange = { from: 1, to: 10 };
+	const numbeRange = { from: 1, to: props.articles()._meta.pageCount };
+	const hightLightPages = () => [props.articles()._meta.currentPage];
 
-	const clickHandler = () => {
+	const filterClickHandler = () => {
+		props.scrollUp();
+
 		let state = props.selectCategoriesSideGet();
 		state = state === 'folded' ? 'unfolded' : 'folded';
 		props.selectCategoriesSideSet(state);
 	}
 
-	const clickHandler2 = () => {
+	const addClickHandler = () => {
 		let state = props.modeGet();
 		state = state === 'list' ? 'edit' : 'list';
 		props.modeSet(state);
-		console.log('Zxcv');
 	}
 
 	return (
 		<div className={'pagination-bar pagination-bar_theme_1'}>
-			<div className='pagination-bar__filter' onClick={clickHandler}>
+			<div className='pagination-bar__filter' onClick={filterClickHandler}>
 				<img className='funnel-16' src='./src/assets/funnel.svg' />
 				<h4 className='button2-like button2-like_theme_1'>
 					filter by categoriy
@@ -310,12 +491,12 @@ function PaginationBar(props) {
 				<PaginationButtonBack />
 
 				<div className='pagination-bar__numbers'>
-					{numbers(numbeRange)}
+					{numbers(numbeRange, hightLightPages, props.pageNumBtnClickHandler)}
 				</div>
 
 				<PaginationButtonForward />
 			</div>
-			<div className='pagination-bar__add-article' onClick={clickHandler2}>
+			<div className='pagination-bar__add-article' onClick={addClickHandler}>
 				<img className='funnel-16' src='./src/assets/add-article-2.png' />
 				<h4 className='button2-like button2-like_theme_1'>
 					add article
@@ -325,10 +506,12 @@ function PaginationBar(props) {
 }
 
 
-function numbers(numbeRange) {
+function numbers(numbeRange, hightLightPages, pageNumBtnClickHandler) {
 	const numbers = [];
 	for (let number = numbeRange.from; number <= numbeRange.to; number++) {
-		numbers.push(<PageNumber number={number} />)
+		numbers.push(<PageNumber number={number}
+			hightLightPages={hightLightPages}
+			pageNumBtnClickHandler={pageNumBtnClickHandler} />)
 	}
 
 	return numbers;
@@ -336,11 +519,14 @@ function numbers(numbeRange) {
 
 
 function PageNumber(props) {
+	const hightlighted = () =>
+		props.hightLightPages().includes(props.number) ? ' highlighted-button ' : '';
+
 	return (
 		<div className='page-number-container'>
 			<div className='page-number'>
-				<div className='page-number page-number_theme_1 
-					button-like button-like_theme_1'>
+				<div className={'page-number page-number_theme_1 button-like button-like_theme_1 ' + hightlighted()}
+					onClick={props.pageNumBtnClickHandler}>
 					{props.number}
 				</div>
 			</div>
@@ -356,7 +542,7 @@ function PaginationButtonBack() {
 					pgb-back__item-back pgb-back__item-back_theme_1 
 						button-like button-like_theme_1'>
 
-					{'🢐🢐🢐 prev'}
+					{/* {'🢐🢐🢐 prev'} */}
 				</div>
 			</div>
 		</div>);
@@ -370,7 +556,7 @@ function PaginationButtonForward() {
 					pgb-forward__item-forward pgb-forward__item-forward_theme_1 
 						button-like button-like_theme_1'>
 
-					{'next 🢒🢒🢒'}
+					{/* {'next 🢒🢒🢒'} */}
 				</div>
 			</div>
 		</div>);
@@ -380,32 +566,41 @@ function SelectCategoriesSide(props) {
 	const hidden = () =>
 		props.draw() ? '' : ' hidden ';
 
-	const categoryItems = props.categories().map(itm =>
-		<CategoryItem id={itm.id} value={itm.value} name={itm.name}
-			label={itm.label} checked={itm.checked} />);
+	const categoryItems = () => {
+		const entries = Object.entries(props.categories.get());
+
+		return entries.map(ent =>
+			<CategoryItem id={ent[0]}
+				label={ent[1].label} checked={ent[1].checked} upd={props.upd} />);
+	};
 
 	return (
 		<div className={'select-categories select-categories_theme_1' + hidden()}>
 			<div className='select-categories select-categories__items 
 					select-categories__items_theme_1'>
 
-				{categoryItems}
-				{props.mode() === 'edit' ? '' : <MenuFilter />}
+				{categoryItems()}
+				{props.mode() === 'edit' ? '' :
+					<MenuFilter reset={props.reset}
+						cancel={props.cancel} apply={props.apply} />}
 			</div>
 		</div>);
 }
 
 
-function MenuFilter() {
+function MenuFilter(props) {
+	// resetCategoriesInEdition
 	return (
 		<div className='menu-filter menu-filter_theme_1'>
 			<div className='menu-filter menu-filter__button_theme_1 
-				menu-filter__button_cancel_theme_1'>
+				menu-filter__button_cancel_theme_1'
+				onClick={props.cancel}>
 
 				Cancel
 			</div>
 			<div className='menu-filter menu-filter__button_theme_1  
-				menu-filter__button_theme_1 menu-filter__button-apply_theme_1'>
+				menu-filter__button_theme_1 menu-filter__button-apply_theme_1'
+				onClick={props.apply}>
 
 				Apply
 			</div>
@@ -415,23 +610,92 @@ function MenuFilter() {
 
 
 function CategoryItem(props) {
+	/*
+		// Вариант хороший, но не точно соответствует заданию - допускает
+		// множественный выбор категорий
+
+		const checkBoxClickHandler = evt => {
+			const chbox = evt.target;
+			const items = chbox.parentNode.parentNode;
+			const itemNodes = items.querySelectorAll('.category-item__chbox')
+			const itemsArray = Array.from(itemNodes);
+	
+			const newSet = itemsArray.reduce((newSet, itm) =>
+				(newSet[itm.id] = { checked: itm.checked }, newSet), {});
+	
+			props.upd(newSet);
+		}
+	 */
+
+	/** Этот вариант не допускает множественный выбор категорий */
+	const checkBoxClickHandlerLight = evt =>
+		props.upd(evt.target.id);
+
 	return (
-		<div>
-			<div className='category-item category-item_theme_1'>
-				<input type='checkbox' id={props.id} name={props.name}
-					value={props.value} checked={props.checked} />
-				<label className='category-item category-item__label 
+		<div className='category-item category-item_theme_1'>
+			<input className='category-item category-item__chbox'
+				type='checkbox' id={props.id}
+				checked={props.checked}
+				onClick={checkBoxClickHandlerLight} />
+
+			<label className='category-item category-item__label 
 					category-item__label_theme_1' for={props.id}>
-					{props.label}</label>
-			</div>
+				{props.label}</label>
 		</div>);
 }
 
 
+function createSignalObj(arg) {
+	const [get, set] = createSignal(arg);
+	return Object.freeze({ get, set });
+}
+
+
+function scrollUp() {
+	setTimeout(() =>
+		document.getElementsByTagName('html')[0].scroll(undefined, 0));
+}
+
+
+function _storeArticle(title = 'No title', category_id = 0,
+	category_title, author = 'Unknown author', text = 'No text') {
+
+	const postData =
+	{
+		title,
+		category:
+		{
+			category_id,
+			title: category_title
+		},
+		author,
+		text
+	};
+
+	$.ajax({
+		url: urlStore,
+		data: JSON.stringify(postData),
+		method: 'POST',
+		success: () => console.log('Successfully sent'),
+		dataType: 'json',
+	});
+
+
+}
+
+
+function noop() { }
 
 
 const loremIpsum =
 	`Lorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt, ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit, qui in ea voluptate velit esse, quam nihil molestiae consequatur, vel illum, qui dolorem eum fugiat, quo voluptas nulla pariatur? At vero eos et accusamus et iusto odio dignissimos ducimus, qui blanditiis praesentium voluptatum deleniti atque corrupti, quos dolores et quas molestias excepturi sint, obcaecati cupiditate non provident, similique sunt in culpa, qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio, cumque nihil impedit, quo minus id, quod maxime placeat, facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet, ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.`;
+
+
+/** Пробуем сгенерировать статьи  */
+function initTable() {
+	for (let i = 1; i < 67; i++)
+		_storeArticle('Title ' + i, 0, 'none', 'Author ' + i, loremIpsum);
+}
 
 
 export default Page;

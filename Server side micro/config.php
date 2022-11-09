@@ -2,11 +2,12 @@
 
 return [
 	'id' => 'micro',
-	// basePath (базовый путь) приложения будет каталог `micro-app`
+	// basePath (базовый путь) приложения
 	'basePath' => __DIR__,
-	// это пространство имен где приложение будет искать все контроллеры
+	// пространство имен где приложение будет искать все контроллеры
 	'controllerNamespace' => 'micro\controllers',
-	// установим псевдоним '@micro', чтобы включить автозагрузку классов из пространства имен 'micro'
+	// псевдоним '@micro', чтобы включить автозагрузку классов 
+	// из пространства имен 'micro'
 	'aliases' => ['@micro' => __DIR__,],
 	'components' => [
 		'db' => [
@@ -21,13 +22,16 @@ return [
 			'enableAutoLogin' => true,
 		],
 		'response' => [
+			'format'     => yii\web\Response::FORMAT_JSON,
+			'charset'    => 'UTF-8', // ?
 			'formatters' =>
 			[
 				\yii\web\Response::FORMAT_JSON =>
 				[
-					'class' => 'yii\web\JsonResponseFormatter',
-					'prettyPrint' => YII_DEBUG, // используем "pretty" в режиме отладки
-					'encodeOptions' => JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE,
+					'class'         => 'yii\web\JsonResponseFormatter',
+					'prettyPrint'   => YII_DEBUG, // "pretty" в режиме отладки
+					'encodeOptions' => JSON_UNESCAPED_SLASHES |
+						JSON_UNESCAPED_UNICODE,
 				],
 			],
 		],

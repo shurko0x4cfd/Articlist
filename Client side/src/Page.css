@@ -62,6 +62,7 @@ div:hover {
 }
 
 .list__body_theme_1 {
+	min-height: 700px;
 	padding: 64px 0px;
 }
 
@@ -311,6 +312,8 @@ div:hover {
 }
 
 .pgb-back__item-back_theme_1 {
+	min-width: 10px;
+	height: 100%;
 	padding-left: 8px;
 	padding-right: 8px;
 	border-radius: 16px 0px 0px 16px;
@@ -319,6 +322,8 @@ div:hover {
 }
 
 .pgb-forward__item-forward_theme_1 {
+	min-width: 10px;
+	height: 100%;
 	padding-left: 8px;
 	padding-right: 8px;
 	border-radius: 0px 16px 16px 0px;
@@ -399,6 +404,11 @@ div:hover {
 
 .hidden {
 	display: none;
+}
+
+.highlighted-button {
+	background-color: rgb(128, 0, 6);
+	color: white;
 }
 
 .dbg-red-border {
