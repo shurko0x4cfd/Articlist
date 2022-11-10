@@ -14,13 +14,16 @@ div:hover {
 	width: 100%;
 }
 
-.header {
+.header_theme_1 {
 	display: flex;
 	flex-direction: row;
 }
 
 .header__body_theme_1, .footer__body_theme_1 {
+	display: flex;
+	flex-direction: row;
 	flex-grow: 1;
+
 	min-height: 128px;
 	background-color: rgb(40, 90, 90);
 }
@@ -28,6 +31,7 @@ div:hover {
 .header__logo-side_theme_1 {
 	display: flex;
 	flex-direction: column;
+
 	justify-content: center;
 	color: aliceblue;
 }
@@ -35,6 +39,7 @@ div:hover {
 .header__logo_theme_1 {
 	display: flex;
 	flex-direction: column;
+
 	padding: 16px 16px 16px 32px;
 	justify-content: center;
 	color: aliceblue;
@@ -46,6 +51,7 @@ div:hover {
 .header__title_theme_1 {
 	display: flex;
 	flex-direction: column;
+
 	padding-left: 64px;
 	justify-content: center;
 	font-size: 72px;
@@ -53,7 +59,7 @@ div:hover {
 	color: aliceblue;
 }
 
-.list_theme_1, .new-article_theme_1 {
+.list_theme_1 {
 	display: flex;
 	flex-direction: row;
 	justify-content: center;
@@ -70,14 +76,13 @@ div:hover {
 	padding: 16px;
 }
 
-.article {
-	min-height: 128px;
-}
-
 .article_theme_1 {
 	display: flex;
 	flex-direction: column;
+
 	max-width: 800px;
+	min-height: 128px;
+
 	color: #222222;
 	background-color: #efefef;
 }
@@ -92,7 +97,12 @@ div:hover {
 }
 
 .new-article_theme_1 {
+	display: flex;
+	flex-direction: row;
 	min-height: 800px;
+	justify-content: center;
+	background-color: bisque;
+
 }
 
 .new-article__body_theme_1 {
@@ -242,7 +252,7 @@ div:hover {
 	padding-right: 0px;
 }
 
-.pagination-bar__numbers {
+.pagination-bar__numbers_theme_1 {
 	display: flex;
 	flex-direction: row;
 }
@@ -257,14 +267,14 @@ div:hover {
 	background-color: cadetblue;
 }
 
-.pagination-bar__filter {
+.pagination-bar__filter_theme_1 {
 	display: flex;
 	flex-direction: row;
 	padding-right: 64px;
 	color: rgb(20, 56, 56);
 }
 
-.pagination-bar__add-article {
+.pagination-bar__add-article_theme_1 {
 	display: flex;
 	flex-direction: row;
 	padding-left: 64px;
@@ -272,7 +282,7 @@ div:hover {
 	color: rgb(20, 56, 56);
 }
 
-.pagination-bar__controls {
+.pagination-bar__controls_theme_1 {
 	display: flex;
 	flex-direction: row;
 
@@ -286,18 +296,16 @@ div:hover {
 	padding: 0px 1px 0px 1px;
 }
 
-.page-number {
-	display: flex;
-	flex-direction: column;
-	height: 100%;
-}
-
 .page-number_theme_1 {
 	display: flex;
-	justify-content: center;
-	min-width: 24px;
+	flex-direction: column;
 
+	min-width: 24px;
+	height: 100%;
+
+	justify-content: center;
 	text-align: center;
+
 	background-color: coral;
 }
 

@@ -65,7 +65,7 @@ function Page(props) {
 	// Текущие настройки фильтрации
 	// Пока захардкожено, но можно переместить на бэк
 	const hasCategoryMgr = createSignalObj({
-		'0': { label: 'Any', checked: false },
+		'0': { label: 'Any', checked: true },
 		'1': { label: 'Category 1', checked: false },
 		'2': { label: 'Category 2', checked: false },
 	});
@@ -221,19 +221,18 @@ function Page(props) {
 
 function Header() {
 	return (
-		<div className='header'>
-			<header className='header header__body header__body_theme_1'>
-				<div className='header header__logo-side header__logo-side_theme_1'>
-
-					<div className='header header__logo header__logo_theme_1'>
+		<header className='header header_theme_1'>
+			<div className='header__body header__body_theme_1'>
+				<div className='header__logo-side header__logo-side_theme_1'>
+					<div className='header__logo header__logo_theme_1'>
 						<p>LOGO</p><p>TYPE</p>
 					</div>
 				</div>
-				<div className='header header__title header__title_theme_1'>
+				<div className='header__title header__title_theme_1'>
 					Header Name
 				</div>
-			</header>
-		</div>);
+			</div>
+		</header>);
 }
 
 
@@ -252,7 +251,7 @@ function List(props) {
 
 	return (
 		<div className='list list_theme_1'>
-			<div className='list list__body_theme_1'>
+			<div className='list__body_theme_1'>
 				{items().map(itm =>
 					<Article text={itm.article}
 						title={itm.title}
@@ -269,7 +268,7 @@ function List(props) {
 function NewArticle(props) {
 	return (
 		<div className='new-article new-article_theme_1'>
-			<div className='new-article new-article__body_theme_1'>
+			<div className='new-article__body_theme_1'>
 				<EditableArticle text={props.text}
 					title={props.title}
 					author={props.author}
@@ -291,8 +290,10 @@ function EditableArticle(props) {
 
 				<EditableCredits title={props.title} author={props.author} />
 
-				<textarea type='text' className='editable-article editable-article__body
-					editable-article__body_theme_1' value={props.text}
+				<textarea type='text'
+					className='editable-article__body 
+						editable-article__body_theme_1'
+					value={props.text}
 					placeholder='Start article writing there...' />
 
 				<MenuSend modeSet={props.modeSet}
@@ -334,15 +335,16 @@ function MenuSend(props) {
 
 	return (
 		<div className='menu-send menu-send_theme_1'>
-			<div className='menu-send menu-send__buttons menu-send__buttons_theme_1'>
-				<div className='menu-send menu-send__button_theme_1 
+			<div className='menu-send__buttons menu-send__buttons_theme_1'>
+				<div className='menu-send__button_theme_1 
 					menu-send__button-cancel_theme_1'
 					onClick={() => props.modeSet('list')}>
 
 					Cancel
 				</div>
-				<div className='menu-send menu-send__button_theme_1 
-					menu-send__button-send_theme_1' onClick={handleSendClick}>
+				<div className='menu-send__button_theme_1 
+					menu-send__button-send_theme_1'
+					onClick={handleSendClick}>
 
 					Send
 				</div>
@@ -355,17 +357,18 @@ function EditableCredits(props) {
 	return (
 		<div className='credits-container'>
 			<header className='credits credits__theme_1'>
-				<input placeholder={props.title} className='credits credits__title 
-					credits__editable-title credits__editable-title_theme_1' />
-				<div className='credits credits__info credits__info_theme_1'>
-					<div className='credits credits__author credits__author_theme_1'>
+				<input placeholder={props.title}
+					className='credits__title credits__editable-title 
+						credits__editable-title_theme_1' />
+				<div className='credits__info credits__info_theme_1'>
+					<div className='credits__author credits__author_theme_1'>
 
-						<div className='credits credits__author-header 
+						<div className='credits__author-header 
 							credits__author-header_theme_1'>
 
 							<h4>Author:</h4>
 						</div>
-						<input className='credits credits__editable-author-name 
+						<input className='credits__editable-author-name 
 							credits__editable-author-name_theme_1'
 							placeholder={props.author} />
 					</div>
@@ -383,7 +386,7 @@ function Article(props) {
 				<Credits title={props.title} author={props.author}
 					dateTime={props.dateTime} />
 
-				<div className='article article-element article-element_theme_1'>
+				<div className='article-element article-element_theme_1'>
 					{props.text}
 				</div>
 				<Categories categoryTitle={props.categoryTitle} />
@@ -395,23 +398,23 @@ function Article(props) {
 function Credits(props) {
 	return (
 		<div className='credits-container'>
-			<header className='credits credits__theme_1'>
-				<h1 className='credits credits__title credits__title_theme_1'>
+			<header className='credits__theme_1'>
+				<h1 className='credits__title credits__title_theme_1'>
 					{props.title}
 				</h1>
-				<div className='credits credits__info credits__info_theme_1'>
-					<div className='credits credits__author credits__author_theme_1'>
-						<div className='credits credits__author-header 
+				<div className='credits__info credits__info_theme_1'>
+					<div className='credits__author credits__author_theme_1'>
+						<div className='credits__author-header 
 						credits__author-header_theme_1'>
 
 							<h4>Author:</h4>
 						</div>
 						<div>{props.author}</div>
 					</div>
-					<div className='credits credits__published-at 
+					<div className='credits__published-at 
 					credits__published-at_theme_1'>
 
-						<div className='credits credits__published-at-header 
+						<div className='credits__published-at-header 
 						credits__published-at-header_theme_1'>
 
 							<h4>Published At:</h4>
@@ -427,8 +430,8 @@ function Credits(props) {
 function Categories(props) {
 	return (
 		<div className='categories-container'>
-			<div className='categories categories_theme_1'>
-				<div className='categories categories__header categories__header_theme_1'>
+			<div className='categories_theme_1'>
+				<div className='categories__header categories__header_theme_1'>
 					<h4>Categories:</h4>
 				</div>
 				<CategoriesList categoryTitle={props.categoryTitle} />
@@ -442,7 +445,7 @@ function CategoriesList(props) {
 
 	return (
 		<div className='categories-list'>
-			<div className='categories-list categories-list__body 
+			<div className='categories-list__body 
 				categories-list__body_theme_1'>
 
 				<Tag label={categoryTitle} />
@@ -454,7 +457,7 @@ function CategoriesList(props) {
 function Tag(props) {
 	return (
 		<div className='tag'>
-			<div className='tag tag__text tag__text_theme_1'>
+			<div className='tag__text tag__text_theme_1'>
 				{'#' + props.label}
 			</div>
 		</div>);
@@ -482,22 +485,26 @@ function PaginationBar(props) {
 
 	return (
 		<div className={'pagination-bar pagination-bar_theme_1'}>
-			<div className='pagination-bar__filter' onClick={filterClickHandler}>
+			<div className='pagination-bar__filter_theme_1'
+				onClick={filterClickHandler}>
+
 				<img className='funnel-16' src='./src/assets/funnel.svg' />
 				<h4 className='button2-like button2-like_theme_1'>
 					filter by categoriy
 				</h4>
 			</div>
-			<div className='pagination-bar__controls'>
+			<div className='pagination-bar__controls_theme_1'>
 				<PaginationButtonBack />
 
-				<div className='pagination-bar__numbers'>
+				<div className='pagination-bar__numbers_theme_1'>
 					{numbers(numbeRange, hightLightPages, props.pageNumBtnClickHandler)}
 				</div>
 
 				<PaginationButtonForward />
 			</div>
-			<div className='pagination-bar__add-article' onClick={addClickHandler}>
+			<div className='pagination-bar__add-article_theme_1'
+				onClick={addClickHandler}>
+
 				<img className='funnel-16' src='./src/assets/add-article-2.png' />
 				<h4 className='button2-like button2-like_theme_1'>
 					add article
@@ -525,8 +532,8 @@ function PageNumber(props) {
 
 	return (
 		<div className='page-number-container'>
-			<div className='page-number'>
-				<div className={'page-number page-number_theme_1 button-like button-like_theme_1 ' + hightlighted()}
+			<div className='page-number page-number_theme_1'>
+				<div className={'button-like button-like_theme_1 ' + hightlighted()}
 					onClick={props.pageNumBtnClickHandler}>
 					{props.number}
 				</div>
@@ -539,9 +546,9 @@ function PaginationButtonBack() {
 	return (
 		<div className='pgb-back-container'>
 			<div className='pgb-back'>
-				<div className='pgb-back page-number_theme_1 
-					pgb-back__item-back pgb-back__item-back_theme_1 
-						button-like button-like_theme_1'>
+				<div className='page-number_theme_1 
+					pgb-back__item-back_theme_1 
+					button-like_theme_1'>
 
 					{/* {'🢐🢐🢐 prev'} */}
 				</div>
@@ -553,9 +560,8 @@ function PaginationButtonForward() {
 	return (
 		<div className='pgb-forward-container'>
 			<div className='pgb-forward'>
-				<div className='pgb-forward page-number_theme_1 
-					pgb-forward__item-forward pgb-forward__item-forward_theme_1 
-						button-like button-like_theme_1'>
+				<div className='page-number_theme_1 
+					pgb-forward__item-forward_theme_1 button-like_theme_1'>
 
 					{/* {'next 🢒🢒🢒'} */}
 				</div>
@@ -580,8 +586,7 @@ function SelectCategoriesSide(props) {
 
 	return (
 		<div className={'select-categories select-categories_theme_1' + hidden()}>
-			<div className='select-categories select-categories__items 
-					select-categories__items_theme_1'>
+			<div className='select-categories__items_theme_1'>
 
 				{categoryItems()}
 				{props.mode() === 'edit' ? '' :
@@ -597,14 +602,15 @@ function MenuFilter(props) {
 	// resetCategoriesInEdition
 	return (
 		<div className='menu-filter menu-filter_theme_1'>
-			<div className='menu-filter menu-filter__button_theme_1 
+			<div className='menu-filter__button_theme_1 
 				menu-filter__button_cancel_theme_1'
 				onClick={props.cancel}>
 
 				Cancel
 			</div>
-			<div className='menu-filter menu-filter__button_theme_1  
-				menu-filter__button_theme_1 menu-filter__button-apply_theme_1'
+			<div className='menu-filter__button_theme_1  
+				menu-filter__button_theme_1 
+				menu-filter__button-apply_theme_1'
 				onClick={props.apply}>
 
 				Apply
@@ -643,13 +649,12 @@ function CategoryItem(props) {
 
 	return (
 		<div className='category-item category-item_theme_1'>
-			<input className='category-item category-item__chbox'
+			<input className='category-item__chbox'
 				type='checkbox' id={props.id}
 				checked={props.checked}
 				onClick={checkBoxClickHandlerLight} />
 
-			<label className='category-item category-item__label 
-					category-item__label_theme_1' for={props.id}>
+			<label className='category-item__label_theme_1' for={props.id}>
 				{props.label}</label>
 		</div>);
 }
