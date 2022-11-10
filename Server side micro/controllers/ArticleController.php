@@ -15,6 +15,7 @@ class ArticleController extends ActiveController
 		'collectionEnvelope' => 'items',
 	];
 
+
 	public function actionStoreart()
 	{
 		$arg = file_get_contents('php://input') ?? '';
@@ -24,15 +25,70 @@ class ArticleController extends ActiveController
 
 		$model    = new Article;
 		$category = $arg['category'] ?? [];
-		
-		$model->title        = $arg['title'] ?? 'No title';
-		$model->category     = json_encode($category);
-		$model->author       = $arg['author'] ?? 'Unknown author';
-		$model->published_at = date('Y-m-d H:i');
-		$model->article      = $arg['text'] ?? 'No text';
+		$category = (array) $category;
+
+		$model->title           = $arg['title'] ?? 'No title';
+		$model->category_id     = $category['id'] ?? 0;
+		$model->category_title  = $category['title'] ?? 'none';
+		$model->author          = $arg['author'] ?? 'Unknown author';
+		$model->published_at    = date('Y-m-d H:i');
+		$model->article         = $arg['text'] ?? 'No text';
 
 		$model->insert();
 	}
+
+
+	public function actionLoadart()
+	{
+		$per_page = $_GET['per-page'] ?? 20;
+		$per_page < 1 and $per_page = 20;
+		$page     = $_GET['page'] ?? 1;
+		$page < 1 and $page = 1;
+		$category = $_GET['category'] ?? 0;
+		$category < 0 and $category = 0;
+		$categoryRequirement = $category ? "category_id = $category" : '';
+
+		$model    = new Article;
+		$query    = $model->find()->where($categoryRequirement)
+			->offset(($page - 1) * $per_page)->limit($per_page);
+		$all      = $query->all();
+		$count    = $query->count();
+		$pagesNum = intdiv($count, $per_page);
+		$pagesNum * $per_page <> $count and $pagesNum++;
+		$acc = [];
+
+		foreach ($all as $article) {
+			$newArticle = [];
+			$newArticle['title']        = $article['title'] ?? 'No title';
+			$newArticle['author']       = $article['author'] ?? 'Unknown author';
+			$newArticle['published_at'] = $article['published_at']
+				?? 'Unknown publishig date';
+			$newArticle['article']      = $article['article'] ?? 'No text';
+
+			$newArticle['category'] =
+				[
+					'id'    => $article['category_id'],
+					'title' => $article['category_title']
+				];
+
+			$acc[] = $newArticle;
+		}
+
+		$meta =
+			[
+				'pageCount'   => $pagesNum, // Нужно вычислить
+				'currentPage' => $page, // Стр с таким номером может и не быть
+			];
+
+		$acc =
+			[
+				'items' => $acc,
+				'_meta' => $meta,
+			];
+
+		return $acc;
+	}
+
 
 	public function behaviors()
 	{

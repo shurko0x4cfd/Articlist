@@ -16,12 +16,13 @@ class m221107_105903_creatable extends Migration
 	public function up()
 	{
 		$this->createTable('articles', [
-			'id'           => Schema::TYPE_PK,
-			'title'        => Schema::TYPE_STRING   . ' NOT NULL',
-			'category'     => Schema::TYPE_STRING   . ' NOT NULL',
-			'author'       => Schema::TYPE_STRING   . ' NOT NULL',
-			'published_at' => Schema::TYPE_DATETIME . ' NOT NULL',
-			'article'      => Schema::TYPE_TEXT     . ' NOT NULL',
+			'id'             => Schema::TYPE_PK,
+			'title'          => Schema::TYPE_STRING   . ' NOT NULL',
+			'category_id'    => Schema::TYPE_INTEGER  . ' NOT NULL',
+			'category_title' => Schema::TYPE_STRING   . ' NOT NULL',
+			'author'         => Schema::TYPE_STRING   . ' NOT NULL',
+			'published_at'   => Schema::TYPE_DATETIME . ' NOT NULL',
+			'article'        => Schema::TYPE_TEXT     . ' NOT NULL',
 		]);
 	}
 

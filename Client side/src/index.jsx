@@ -6,12 +6,12 @@ import './index.css';
 import Page from './Page';
 
 
-const urlFetch = 'http://localhost:4000/web/index.php?r=article/index';
+const urlFetch = 'http://localhost:4000/web/index.php?r=article/loadart';
 
 const start = data =>
 	render(() => <Page data={data} />, document.getElementById('root'));
 
-	// Init Загружаем первую страницу
+// Init Загружаем первую страницу
 $.ajax({
 	url: urlFetch,
 	method: 'GET',

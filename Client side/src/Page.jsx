@@ -1,5 +1,5 @@
 
-import { createSignal, createEffect } from "solid-js";
+import { createSignal } from "solid-js";
 import './Page.css';
 import './assets/funnel.svg';
 import './assets/add-article.png';
@@ -9,7 +9,7 @@ import 'https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js';
 const cl = console.log;
 const ONLY = 0;
 
-const urlFetch = 'http://localhost:4000/web/index.php?r=article/index';
+const urlFetch = 'http://localhost:4000/web/index.php?r=article/loadart';
 const urlStore = "http://localhost:4000/web/index.php?r=article/storeart"
 
 const state =
@@ -19,9 +19,7 @@ const state =
 	storedText: '',
 }
 
-const [stateGet, stateSet] = createSignal(state);
-
-
+const [stateGet] = createSignal(state);
 
 
 function Page(props) {
@@ -35,20 +33,27 @@ function Page(props) {
 		}
 	};
 	const articles = props.data || stub;
-
-	/** Пробуем сгенерировать статьи, если таблица пуста */
-	if (!articles._meta.pageCount || !articles.items.length)
-		initTable();
-
 	const [articlesGet, articlesSet] = createSignal(articles);
 
-	// Init Загружаем страницу
-	const loadArticles = (pageNum = '') => $.ajax({
-		url: urlFetch + pageNum,
+	// Загружаем страницу
+	const loadArticles = (pageNum = '', category = '') => $.ajax({
+		url: urlFetch + pageNum + category,
 		method: 'GET',
 		dataType: 'json',
-	}).done(data => { articlesSet(data) });
+	}).done(data => {
+		articlesSet(data);
+	});
 
+	/**
+	 * Пробуем сгенерировать статьи, если таблица пуста
+	 * Нужно перенести это на бэк
+	 */
+	if (!articles._meta.pageCount || !articles.items.length) {
+		initTable();
+		loadArticles();
+	}
+
+	const [currentCategoryGet, currentCategorySet] = createSignal(0);
 	const [modeGet, modeSet] = createSignal('list');
 
 	const [selectCategoriesSideGet, selectCategoriesSideSet] =
@@ -58,9 +63,11 @@ function Page(props) {
 		selectCategoriesSideGet() !== 'folded';
 
 	// Текущие настройки фильтрации
+	// Пока захардкожено, но можно переместить на бэк
 	const hasCategoryMgr = createSignalObj({
-		id1: { label: 'Category 1', checked: false },
-		id2: { label: 'Category 2', checked: true },
+		'0': { label: 'Any', checked: false },
+		'1': { label: 'Category 1', checked: false },
+		'2': { label: 'Category 2', checked: false },
 	});
 
 	/** Копирует настройки фильтрации */
@@ -84,8 +91,8 @@ function Page(props) {
 	// Какие категории добавить в новую статью из тех, что есть
 	// По умолчанию никакие
 	const addCategoryMgr = createSignalObj({
-		id3: { label: 'Category 3', checked: false },
-		id4: { label: 'Category 4', checked: false },
+		'1': { label: 'Category 1', checked: false },
+		'2': { label: 'Category 2', checked: false },
 	});
 
 	const isList = () => modeGet() === 'list';
@@ -151,6 +158,7 @@ function Page(props) {
 	const applyCategoriesInEdition = () => {
 		hasCategoryMgr.set(editCategoryMgr.get());
 		selectCategoriesSideSet('folded');
+		loadArticles(undefined, '&category=' + currentCategoryGet());
 	}
 
 
@@ -160,16 +168,8 @@ function Page(props) {
 
 	function pageNumBtnClickHandler(evt) {
 		const pageNum = evt.target.innerText || 1;
-		loadArticles('&page=' + pageNum);
+		loadArticles('&page=' + pageNum, '&category=' + currentCategoryGet());
 	}
-
-
-	// setTimeout(() => {
-	// 	const art = articlesGet();
-	// 	art.items[ONLY].title = 'zxcv';
-	// 	articlesSet({...art});
-	// }, 5000);
-
 
 	return (
 		<div className='page'>
@@ -180,7 +180,7 @@ function Page(props) {
 				modeGet={modeGet}
 				modeSet={modeSet}
 				scrollUp={noop}
-				articles={articlesGet}
+				articlesGet={articlesGet}
 				pageNumBtnClickHandler={pageNumBtnClickHandler}
 			/> : ''}
 			{drawSelectCategoriesSide() ?
@@ -191,6 +191,7 @@ function Page(props) {
 					cancel={cancelCategoriesEdition}
 					reset={resetCategoriesEdition}
 					apply={applyCategoriesInEdition}
+					currentCategorySet={currentCategorySet}
 				/> : ''}
 			{isList() ?
 				<List categories={categories} articlesGet={articlesGet}
@@ -210,7 +211,7 @@ function Page(props) {
 				modeGet={modeGet}
 				modeSet={modeSet}
 				scrollUp={scrollUp}
-				articles={articlesGet}
+				articlesGet={articlesGet}
 				pageNumBtnClickHandler={pageNumBtnClickHandler}
 			/> : ''}
 			<Footer />
@@ -222,13 +223,13 @@ function Header() {
 	return (
 		<div className='header'>
 			<header className='header header__body header__body_theme_1'>
-				<div class='header header__logo-side header__logo-side_theme_1'>
+				<div className='header header__logo-side header__logo-side_theme_1'>
 
-					<div class='header header__logo header__logo_theme_1'>
+					<div className='header header__logo header__logo_theme_1'>
 						<p>LOGO</p><p>TYPE</p>
 					</div>
 				</div>
-				<div class='header header__title header__title_theme_1'>
+				<div className='header header__title header__title_theme_1'>
 					Header Name
 				</div>
 			</header>
@@ -247,9 +248,6 @@ function Footer() {
 
 
 function List(props) {
-	// const articles = props.articlesGet() || {};
-	// const items = articles.items || [];
-
 	const items = () => props.articlesGet().items;
 
 	return (
@@ -260,7 +258,9 @@ function List(props) {
 						title={itm.title}
 						author={itm.author}
 						dateTime={itm.published_at}
-						categories={props.categories()} />
+						categories={props.categories()}
+						categoryTitle={(itm.category || {}).title || 'none'}
+					/>
 				)}
 			</div>
 		</div>);
@@ -328,6 +328,8 @@ function MenuSend(props) {
 			category_id = 0;
 
 		props.send(title, category_id, category_title, author, text);
+
+		props.modeSet('list');
 	};
 
 	return (
@@ -335,7 +337,7 @@ function MenuSend(props) {
 			<div className='menu-send menu-send__buttons menu-send__buttons_theme_1'>
 				<div className='menu-send menu-send__button_theme_1 
 					menu-send__button-cancel_theme_1'
-					onClick={props.modeSet.bind(null, 'list')}>
+					onClick={() => props.modeSet('list')}>
 
 					Cancel
 				</div>
@@ -384,7 +386,7 @@ function Article(props) {
 				<div className='article article-element article-element_theme_1'>
 					{props.text}
 				</div>
-				<Categories list={props.articleCategories || []} />
+				<Categories categoryTitle={props.categoryTitle} />
 			</article>
 		</div>);
 }
@@ -429,22 +431,21 @@ function Categories(props) {
 				<div className='categories categories__header categories__header_theme_1'>
 					<h4>Categories:</h4>
 				</div>
-				<CategoriesList list={props.list} />
+				<CategoriesList categoryTitle={props.categoryTitle} />
 			</div>
 		</div>);
 }
 
 
 function CategoriesList(props) {
-	let list = props.list.map(itm => <Tag category={itm} />);
-	list = list.length ? list : <Tag category={{ label: 'none' }} />;
+	const categoryTitle = props.categoryTitle || <Tag category={{ label: 'none' }} />;
 
 	return (
 		<div className='categories-list'>
 			<div className='categories-list categories-list__body 
 				categories-list__body_theme_1'>
 
-				{list}
+				<Tag label={categoryTitle} />
 			</div>
 		</div>);
 }
@@ -454,7 +455,7 @@ function Tag(props) {
 	return (
 		<div className='tag'>
 			<div className='tag tag__text tag__text_theme_1'>
-				{'#' + props.category.label}
+				{'#' + props.label}
 			</div>
 		</div>);
 
@@ -462,8 +463,8 @@ function Tag(props) {
 
 
 function PaginationBar(props) {
-	const numbeRange = { from: 1, to: props.articles()._meta.pageCount };
-	const hightLightPages = () => [props.articles()._meta.currentPage];
+	const numbeRange = { from: 1, to: props.articlesGet()._meta.pageCount };
+	const hightLightPages = () => props.articlesGet()._meta.currentPage;
 
 	const filterClickHandler = () => {
 		props.scrollUp();
@@ -511,7 +512,7 @@ function numbers(numbeRange, hightLightPages, pageNumBtnClickHandler) {
 	for (let number = numbeRange.from; number <= numbeRange.to; number++) {
 		numbers.push(<PageNumber number={number}
 			hightLightPages={hightLightPages}
-			pageNumBtnClickHandler={pageNumBtnClickHandler} />)
+			pageNumBtnClickHandler={pageNumBtnClickHandler} />);
 	}
 
 	return numbers;
@@ -519,8 +520,8 @@ function numbers(numbeRange, hightLightPages, pageNumBtnClickHandler) {
 
 
 function PageNumber(props) {
-	const hightlighted = () =>
-		props.hightLightPages().includes(props.number) ? ' highlighted-button ' : '';
+	const hightlighted = () => // ! сравнение нестрогое
+		props.hightLightPages() == props.number ? ' highlighted-button ' : '';
 
 	return (
 		<div className='page-number-container'>
@@ -571,7 +572,10 @@ function SelectCategoriesSide(props) {
 
 		return entries.map(ent =>
 			<CategoryItem id={ent[0]}
-				label={ent[1].label} checked={ent[1].checked} upd={props.upd} />);
+				label={ent[1].label} checked={ent[1].checked} upd={props.upd}
+				currentCategorySet={props.currentCategorySet}
+				mode={props.mode}
+			/>);
 	};
 
 	return (
@@ -582,7 +586,8 @@ function SelectCategoriesSide(props) {
 				{categoryItems()}
 				{props.mode() === 'edit' ? '' :
 					<MenuFilter reset={props.reset}
-						cancel={props.cancel} apply={props.apply} />}
+						cancel={props.cancel} apply={props.apply}
+					/>}
 			</div>
 		</div>);
 }
@@ -628,8 +633,13 @@ function CategoryItem(props) {
 	 */
 
 	/** Этот вариант не допускает множественный выбор категорий */
-	const checkBoxClickHandlerLight = evt =>
-		props.upd(evt.target.id);
+	const checkBoxClickHandlerLight = evt => {
+		const id = evt.target.id;
+		props.upd(id);
+
+		props.mode() === 'list' &&
+			props.currentCategorySet(id);
+	}
 
 	return (
 		<div className='category-item category-item_theme_1'>
@@ -653,7 +663,7 @@ function createSignalObj(arg) {
 
 function scrollUp() {
 	setTimeout(() =>
-		document.getElementsByTagName('html')[0].scroll(undefined, 0));
+		document.getElementsByTagName('html')[ONLY].scroll(undefined, 0));
 }
 
 
@@ -665,7 +675,7 @@ function _storeArticle(title = 'No title', category_id = 0,
 		title,
 		category:
 		{
-			category_id,
+			id: category_id,
 			title: category_title
 		},
 		author,
@@ -693,7 +703,7 @@ const loremIpsum =
 
 /** Пробуем сгенерировать статьи  */
 function initTable() {
-	for (let i = 1; i < 67; i++)
+	for (let i = 1; i < 45; i++)
 		_storeArticle('Title ' + i, 0, 'none', 'Author ' + i, loremIpsum);
 }
 

@@ -17,10 +17,10 @@ return [
 			'password' => 'asdf',
 			'charset'  => 'utf8',
 		],
-		'user' => [
-			'identityClass'   => 'micro\models\User',
-			'enableAutoLogin' => true,
-		],
+		// 'user' => [
+		// 	'identityClass'   => 'micro\models\User',
+		// 	'enableAutoLogin' => true,
+		// ],
 		'response' => [
 			'format'     => yii\web\Response::FORMAT_JSON,
 			'charset'    => 'UTF-8', // ?
