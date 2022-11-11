@@ -174,16 +174,17 @@ function Page(props) {
 	return (
 		<div className='page'>
 			<Header />
-			{isList() ? <PaginationBar
-				selectCategoriesSideSet={selectCategoriesSideSet}
-				selectCategoriesSideGet={selectCategoriesSideGet}
-				modeGet={modeGet}
-				modeSet={modeSet}
-				scrollUp={noop}
-				articlesGet={articlesGet}
-				pageNumBtnClickHandler={pageNumBtnClickHandler}
-			/> : ''}
-			{drawSelectCategoriesSide() ?
+			<Show when={isList()}>
+				<PaginationBar
+					selectCategoriesSideSet={selectCategoriesSideSet}
+					selectCategoriesSideGet={selectCategoriesSideGet}
+					modeGet={modeGet}
+					modeSet={modeSet}
+					scrollUp={noop}
+					articlesGet={articlesGet}
+					pageNumBtnClickHandler={pageNumBtnClickHandler} />
+			</Show>
+			<Show when={drawSelectCategoriesSide()}>
 				<SelectCategoriesSide categories={categories()}
 					mode={modeGet}
 					draw={drawSelectCategoriesSide}
@@ -191,8 +192,8 @@ function Page(props) {
 					cancel={cancelCategoriesEdition}
 					reset={resetCategoriesEdition}
 					apply={applyCategoriesInEdition}
-					currentCategorySet={currentCategorySet}
-				/> : ''}
+					currentCategorySet={currentCategorySet} />
+			</Show>
 			{isList() ?
 				<List categories={categories} articlesGet={articlesGet}
 					articlesSet={articlesSet}
@@ -205,15 +206,16 @@ function Page(props) {
 					send={storeArticle}
 				/>}
 
-			{isList() ? <PaginationBar
-				selectCategoriesSideSet={selectCategoriesSideSet}
-				selectCategoriesSideGet={selectCategoriesSideGet}
-				modeGet={modeGet}
-				modeSet={modeSet}
-				scrollUp={scrollUp}
-				articlesGet={articlesGet}
-				pageNumBtnClickHandler={pageNumBtnClickHandler}
-			/> : ''}
+			<Show when={isList()}>
+				<PaginationBar
+					selectCategoriesSideSet={selectCategoriesSideSet}
+					selectCategoriesSideGet={selectCategoriesSideGet}
+					modeGet={modeGet}
+					modeSet={modeSet}
+					scrollUp={scrollUp}
+					articlesGet={articlesGet}
+					pageNumBtnClickHandler={pageNumBtnClickHandler} />
+			</Show>
 			<Footer />
 		</div>);
 }
@@ -247,6 +249,7 @@ function Footer() {
 
 
 function List(props) {
+	cl(props.articlesGet());
 	const items = () => props.articlesGet().items;
 
 	return (
@@ -430,12 +433,12 @@ function Credits(props) {
 function Categories(props) {
 	return (
 		<div className='categories-container'>
-			<div className='categories_theme_1'>
+			<fiiter className='categories categories_theme_1'>
 				<div className='categories__header categories__header_theme_1'>
 					<h4>Categories:</h4>
 				</div>
 				<CategoriesList categoryTitle={props.categoryTitle} />
-			</div>
+			</fiiter>
 		</div>);
 }
 
@@ -484,7 +487,7 @@ function PaginationBar(props) {
 	}
 
 	return (
-		<div className={'pagination-bar pagination-bar_theme_1'}>
+		<nav className={'pagination-bar pagination-bar_theme_1'}>
 			<div className='pagination-bar__filter_theme_1'
 				onClick={filterClickHandler}>
 
@@ -510,7 +513,7 @@ function PaginationBar(props) {
 					add article
 				</h4>
 			</div>
-		</div>);
+		</nav>);
 }
 
 
@@ -560,8 +563,8 @@ function PaginationButtonForward() {
 	return (
 		<div className='pgb-forward-container'>
 			<div className='pgb-forward'>
-				<div className='page-number_theme_1 
-					pgb-forward__item-forward_theme_1 button-like_theme_1'>
+				<div className='pgb-forward__body 
+					page-number_theme_1  button-like_theme_1'>
 
 					{/* {'next 🢒🢒🢒'} */}
 				</div>
@@ -570,8 +573,6 @@ function PaginationButtonForward() {
 }
 
 function SelectCategoriesSide(props) {
-	const hidden = () =>
-		props.draw() ? '' : ' hidden ';
 
 	const categoryItems = () => {
 		const entries = Object.entries(props.categories.get());
@@ -585,37 +586,37 @@ function SelectCategoriesSide(props) {
 	};
 
 	return (
-		<div className={'select-categories select-categories_theme_1' + hidden()}>
-			<div className='select-categories__items_theme_1'>
-
-				{categoryItems()}
-				{props.mode() === 'edit' ? '' :
+		<Show when={props.draw()}>
+			<menu className={'select-categories select-categories_theme_1'}>
+				<menu className='select-categories__items_theme_1'>
+					{categoryItems()}
+				</menu>
+				<Show when={props.mode() === 'list'}>
 					<MenuFilter reset={props.reset}
-						cancel={props.cancel} apply={props.apply}
-					/>}
-			</div>
-		</div>);
+						cancel={props.cancel} apply={props.apply} />
+				</Show>
+			</menu>
+		</Show>);
 }
 
 
 function MenuFilter(props) {
-	// resetCategoriesInEdition
 	return (
-		<div className='menu-filter menu-filter_theme_1'>
-			<div className='menu-filter__button_theme_1 
+		<menu className='menu-filter menu-filter_theme_1'>
+			<span className='menu-filter__button_theme_1 
 				menu-filter__button_cancel_theme_1'
 				onClick={props.cancel}>
 
 				Cancel
-			</div>
-			<div className='menu-filter__button_theme_1  
+			</span>
+			<span className='menu-filter__button_theme_1  
 				menu-filter__button_theme_1 
 				menu-filter__button-apply_theme_1'
 				onClick={props.apply}>
 
 				Apply
-			</div>
-		</div>
+			</span>
+		</menu>
 	);
 }
 
@@ -648,15 +649,15 @@ function CategoryItem(props) {
 	}
 
 	return (
-		<div className='category-item category-item_theme_1'>
+		<li className='category-item'>
 			<input className='category-item__chbox'
 				type='checkbox' id={props.id}
 				checked={props.checked}
 				onClick={checkBoxClickHandlerLight} />
 
-			<label className='category-item__label_theme_1' for={props.id}>
+			<label className='category-item__label' for={props.id}>
 				{props.label}</label>
-		</div>);
+		</li>);
 }
 
 
@@ -694,8 +695,6 @@ function _storeArticle(title = 'No title', category_id = 0,
 		success: () => console.log('Successfully sent'),
 		dataType: 'json',
 	});
-
-
 }
 
 
