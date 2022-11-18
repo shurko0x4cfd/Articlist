@@ -1,19 +1,16 @@
 /* @refresh reload */
 import { render } from 'solid-js/web';
-import { createSignal } from "solid-js";
-
 import './index.css';
 import Page from './Page';
+import { ajax } from "./tools";
 
 
-const urlFetch = 'http://localhost:4000/web/index.php?r=article/loadart';
-
-const start = data =>
-	render(() => <Page data={data} />, document.getElementById('root'));
+const start =
+	xhr => {
+		const text = xhr.responseText;
+		const arrticles = JSON.parse(text);
+		render(() => <Page articles={arrticles} />, document.getElementById('root'));
+	};
 
 // Init Загружаем первую страницу
-$.ajax({
-	url: urlFetch,
-	method: 'GET',
-	dataType: 'json',
-}).done(start);
+ajax(start);

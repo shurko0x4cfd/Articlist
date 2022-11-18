@@ -1,16 +1,11 @@
 
 import { createSignal } from "solid-js";
+import { createStore } from "solid-js/store";
 import './Page.css';
 import './assets/funnel.svg';
 import './assets/add-article.png';
-import 'https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js';
+import { ONLY, cl, fetchUrl, storeUrl, ajax } from "./tools";
 
-
-const cl = console.log;
-const ONLY = 0;
-
-const urlFetch = 'http://localhost:4000/web/index.php?r=article/loadart';
-const urlStore = "http://localhost:4000/web/index.php?r=article/storeart"
 
 const state =
 {
@@ -32,17 +27,12 @@ function Page(props) {
 			currentPage: 1
 		}
 	};
-	const articles = props.data || stub;
-	const [articlesGet, articlesSet] = createSignal(articles);
+	const articles = props.articles || stub;
+	const [articlesGet, articlesSet] = createStore({ articles });
 
-	// Загружаем страницу
-	const loadArticles = (pageNum = '', category = '') => $.ajax({
-		url: urlFetch + pageNum + category,
-		method: 'GET',
-		dataType: 'json',
-	}).done(data => {
-		articlesSet(data);
-	});
+	const loadArticles = (pageNum = '', category = '') =>
+		ajax(xhr => articlesSet('articles', () => JSON.parse(xhr.responseText)),
+			fetchUrl + pageNum + category, 'GET', {});
 
 	/**
 	 * Пробуем сгенерировать статьи, если таблица пуста
@@ -55,21 +45,20 @@ function Page(props) {
 
 	const [currentCategoryGet, currentCategorySet] = createSignal(0);
 	const [modeGet, modeSet] = createSignal('list');
-
-	const [selectCategoriesSideGet, selectCategoriesSideSet] =
-		createSignal('folded');
+	const currentSelectCategoriesSide = signalObject('folded');
 
 	const drawSelectCategoriesSide = () => modeGet() === 'edit' ||
-		selectCategoriesSideGet() !== 'folded';
+		currentSelectCategoriesSide.get() !== 'folded';
 
 	// Текущие настройки фильтрации
 	// Пока захардкожено, но можно переместить на бэк
-	const hasCategoryMgr = createSignalObj({
+	const hasCategoryMgr = signalObject({
 		'0': { label: 'Any', checked: true },
 		'1': { label: 'Category 1', checked: false },
 		'2': { label: 'Category 2', checked: false },
 	});
 
+	// Нужно заменить на store ?
 	/** Копирует настройки фильтрации */
 	const selectedCategories = () => {
 		const has = hasCategoryMgr.get();
@@ -86,11 +75,11 @@ function Page(props) {
 	 *  Копируем настоящие настройки фильтрации в ещё не применённые,
 	 *  отображаемые на панели настроек
 	 */
-	const editCategoryMgr = createSignalObj(selectedCategories());
+	const editCategoryMgr = signalObject(selectedCategories());
 
 	// Какие категории добавить в новую статью из тех, что есть
 	// По умолчанию никакие
-	const addCategoryMgr = createSignalObj({
+	const addCategoryMgr = signalObject({
 		'1': { label: 'Category 1', checked: false },
 		'2': { label: 'Category 2', checked: false },
 	});
@@ -138,7 +127,7 @@ function Page(props) {
 	 */
 	const resetCategoriesEdition = () => {
 		editCategoryMgr.set(selectedCategories());
-		selectCategoriesSideSet('folded');
+		currentSelectCategoriesSide.set('folded');
 	}
 
 	/**
@@ -147,17 +136,17 @@ function Page(props) {
 	 */
 	const restoreCategoriesEdition = () => {
 		editCategoryMgr.set(selectedCategories());
-		selectCategoriesSideSet('folded');
+		currentSelectCategoriesSide.set('folded');
 	}
 
 	const cancelCategoriesEdition = () => {
 		editCategoryMgr.set(selectedCategories());
-		selectCategoriesSideSet('folded');
+		currentSelectCategoriesSide.set('folded');
 	}
 
 	const applyCategoriesInEdition = () => {
 		hasCategoryMgr.set(editCategoryMgr.get());
-		selectCategoriesSideSet('folded');
+		currentSelectCategoriesSide.set('folded');
 		loadArticles(undefined, '&category=' + currentCategoryGet());
 	}
 
@@ -176,8 +165,7 @@ function Page(props) {
 			<Header />
 			<Show when={isList()}>
 				<PaginationBar
-					selectCategoriesSideSet={selectCategoriesSideSet}
-					selectCategoriesSideGet={selectCategoriesSideGet}
+					categoriesState={currentSelectCategoriesSide}
 					modeGet={modeGet}
 					modeSet={modeSet}
 					scrollUp={noop}
@@ -208,8 +196,7 @@ function Page(props) {
 
 			<Show when={isList()}>
 				<PaginationBar
-					selectCategoriesSideSet={selectCategoriesSideSet}
-					selectCategoriesSideGet={selectCategoriesSideGet}
+					categoriesState={currentSelectCategoriesSide}
 					modeGet={modeGet}
 					modeSet={modeSet}
 					scrollUp={scrollUp}
@@ -249,8 +236,7 @@ function Footer() {
 
 
 function List(props) {
-	cl(props.articlesGet());
-	const items = () => props.articlesGet().items;
+	const items = () => props.articlesGet.articles.items;
 
 	return (
 		<div className='list list_theme_1'>
@@ -461,23 +447,26 @@ function Tag(props) {
 	return (
 		<div className='tag'>
 			<div className='tag__text tag__text_theme_1'>
-				{'#' + props.label}
+				<Show when={props.label !== 'none'} fallback={() => 'none'}>
+					{'#' + props.label}
+				</Show>
 			</div>
+
 		</div>);
 
 }
 
 
 function PaginationBar(props) {
-	const numbeRange = { from: 1, to: props.articlesGet()._meta.pageCount };
-	const hightLightPages = () => props.articlesGet()._meta.currentPage;
+	const numbeRange = { from: 1, to: props.articlesGet.articles._meta.pageCount };
+	const hightLightPages = () => props.articlesGet.articles._meta.currentPage;
 
 	const filterClickHandler = () => {
 		props.scrollUp();
 
-		let state = props.selectCategoriesSideGet();
+		let state = props.categoriesState.get();
 		state = state === 'folded' ? 'unfolded' : 'folded';
-		props.selectCategoriesSideSet(state);
+		props.categoriesState.set(state);
 	}
 
 	const addClickHandler = () => {
@@ -530,16 +519,21 @@ function numbers(numbeRange, hightLightPages, pageNumBtnClickHandler) {
 
 
 function PageNumber(props) {
+	const { pageNumBtnClickHandler } = props;
 	const hightlighted = () => // ! сравнение нестрогое
 		props.hightLightPages() == props.number ? ' highlighted-button ' : '';
 
 	return (
 		<div className='page-number-container'>
 			<div className='page-number page-number_theme_1'>
-				<div className={'button-like button-like_theme_1 ' + hightlighted()}
-					onClick={props.pageNumBtnClickHandler}>
+				<a className={'button-like button-like_theme_1 ' + hightlighted()}
+					role='button'
+					tabindex='0'
+					onClick={pageNumBtnClickHandler}
+					onKeyDown={pageNumBtnClickHandler}>
+
 					{props.number}
-				</div>
+				</a>
 			</div>
 		</div>);
 }
@@ -601,24 +595,32 @@ function SelectCategoriesSide(props) {
 
 
 function MenuFilter(props) {
+	const { cancel, apply } = props;
 	return (
 		<menu className='menu-filter menu-filter_theme_1'>
-			<span className='menu-filter__button_theme_1 
+			<a className='menu-filter__button_theme_1 
 				menu-filter__button_cancel_theme_1'
-				onClick={props.cancel}>
+				role='button'
+				tabindex='0'
+				onClick={cancel}
+				onKeyDown={cancel}>
 
 				Cancel
-			</span>
-			<span className='menu-filter__button_theme_1  
+			</a>
+			<a className='menu-filter__button_theme_1  
 				menu-filter__button_theme_1 
 				menu-filter__button-apply_theme_1'
-				onClick={props.apply}>
+				role='button'
+				tabindex='0'
+				onClick={apply}
+				onKeyDown={apply}>
 
 				Apply
-			</span>
+			</a>
 		</menu>
 	);
 }
+// В css [role="button"]:focus {outline: none;}
 
 
 function CategoryItem(props) {
@@ -661,16 +663,20 @@ function CategoryItem(props) {
 }
 
 
-function createSignalObj(arg) {
+// const signalObject =
+// 	(arg, [get, set] = createSignal(arg)) =>
+// 		Object.freeze({ get, set });
+
+
+function signalObject(arg) {
 	const [get, set] = createSignal(arg);
 	return Object.freeze({ get, set });
 }
 
 
-function scrollUp() {
+const scrollUp = () =>
 	setTimeout(() =>
 		document.getElementsByTagName('html')[ONLY].scroll(undefined, 0));
-}
 
 
 function _storeArticle(title = 'No title', category_id = 0,
@@ -688,13 +694,7 @@ function _storeArticle(title = 'No title', category_id = 0,
 		text
 	};
 
-	$.ajax({
-		url: urlStore,
-		data: JSON.stringify(postData),
-		method: 'POST',
-		success: () => console.log('Successfully sent'),
-		dataType: 'json',
-	});
+	ajax(() => console.log('Successfully sent'), storeUrl, 'POST', postData);
 }
 
 
@@ -710,6 +710,16 @@ function initTable() {
 	for (let i = 1; i < 45; i++)
 		_storeArticle('Title ' + i, 0, 'none', 'Author ' + i, loremIpsum);
 }
+
+
+// TODO: Обновлять последнюю страницу, после отправки
+// Переместить генерацию статей на бэк
+// Переместить на бэк список тегов фильтрации
+// Кэшировать загруженные статьи
+// Реанимировать кнопки вперёд/назад
+// Пофиксить фильтрацию
+// Пофиксить имена классов css
+// Убрать секунды из даты
 
 
 export default Page;
