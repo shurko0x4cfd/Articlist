@@ -1,15 +1,16 @@
 /* @refresh reload */
 import { render } from 'solid-js/web';
-import './index.css';
 import Page from './Page';
 import { ajax } from "./tools";
+import { ONLY } from 'raffinade';
 
 
 const start =
 	xhr => {
 		const text = xhr.responseText;
-		const arrticles = JSON.parse(text);
-		render(() => <Page articles={arrticles} />, document.getElementById('root'));
+		const articles = JSON.parse(text);
+		render(() => <Page {...{articles}} />,
+		document.getElementsByClassName('articlist-root-el')[ONLY]);
 	};
 
 // Init Загружаем первую страницу

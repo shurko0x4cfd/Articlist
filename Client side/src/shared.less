@@ -4,6 +4,34 @@
 	padding: 0px;
 }
 
+html, body {
+	width: 100%;
+	height: 100%;
+}
+
+body {
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+		'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+		sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+code {
+	font-family: 'Terminus (TTF)', source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+		monospace;
+}
+
+.row {
+	display: flex;
+	flex-direction: row;
+}
+
+.col {
+	display: flex;
+	flex-direction: column;
+}
+
 div:hover {
 	cursor: default;
 }
@@ -14,49 +42,13 @@ div:hover {
 	width: 100%;
 }
 
-.header_theme_1 {
-	display: flex;
-	flex-direction: row;
-}
-
-.header__body_theme_1, .footer__body_theme_1 {
+.footer__body_theme_1 {
 	display: flex;
 	flex-direction: row;
 	flex-grow: 1;
 
 	min-height: 128px;
 	background-color: rgb(40, 90, 90);
-}
-
-.header__logo-side_theme_1 {
-	display: flex;
-	flex-direction: column;
-
-	justify-content: center;
-	color: aliceblue;
-}
-
-.header__logo_theme_1 {
-	display: flex;
-	flex-direction: column;
-
-	padding: 16px 16px 16px 32px;
-	justify-content: center;
-	color: aliceblue;
-	font-size: 32px;
-	font-weight: bold;
-	rotate: -45deg;
-}
-
-.header__title_theme_1 {
-	display: flex;
-	flex-direction: column;
-
-	padding-left: 64px;
-	justify-content: center;
-	font-size: 72px;
-	font-weight: bold;
-	color: aliceblue;
 }
 
 .list_theme_1 {

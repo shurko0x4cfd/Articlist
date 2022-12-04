@@ -1,10 +1,14 @@
+/* @flow */
 
 import { createSignal } from "solid-js";
 import { createStore } from "solid-js/store";
-import './Page.css';
+import './shared.less';
 import './assets/funnel.svg';
 import './assets/add-article.png';
-import { ONLY, cl, fetchUrl, storeUrl, ajax } from "./tools";
+import { fetchUrl, storeUrl, ajax } from "./tools";
+import { ONLY, noop, cl } from 'raffinade';
+
+import Header from './components/Header/header.jsx'
 
 
 const state =
@@ -12,7 +16,7 @@ const state =
 	storedTitle: 'Enter new article title here',
 	storedAuthorname: 'Enter your name here',
 	storedText: '',
-}
+};
 
 const [stateGet] = createSignal(state);
 
@@ -32,7 +36,7 @@ function Page(props) {
 
 	const loadArticles = (pageNum = '', category = '') =>
 		ajax(xhr => articlesSet('articles', () => JSON.parse(xhr.responseText)),
-			fetchUrl + pageNum + category, 'GET', {});
+			fetchUrl + pageNum + category);
 
 	/**
 	 * Пробуем сгенерировать статьи, если таблица пуста
@@ -84,9 +88,9 @@ function Page(props) {
 		'2': { label: 'Category 2', checked: false },
 	});
 
-	const isList = () => modeGet() === 'list';
+	const isList = ()/*: boolean */ => modeGet() === 'list';
 
-	const categories = () =>
+	const categories = ()/*: Readonly */ =>
 		isList() ? editCategoryMgr : addCategoryMgr;
 
 	/** Этот вариант допускает множественный выбор категорий */
@@ -166,11 +170,8 @@ function Page(props) {
 			<Show when={isList()}>
 				<PaginationBar
 					categoriesState={currentSelectCategoriesSide}
-					modeGet={modeGet}
-					modeSet={modeSet}
-					scrollUp={noop}
-					articlesGet={articlesGet}
-					pageNumBtnClickHandler={pageNumBtnClickHandler} />
+					{...{ modeGet, modeSet, articlesGet, pageNumBtnClickHandler }}
+					scrollUp={noop} />
 			</Show>
 			<Show when={drawSelectCategoriesSide()}>
 				<SelectCategoriesSide categories={categories()}
@@ -180,7 +181,7 @@ function Page(props) {
 					cancel={cancelCategoriesEdition}
 					reset={resetCategoriesEdition}
 					apply={applyCategoriesInEdition}
-					currentCategorySet={currentCategorySet} />
+					{...{ currentCategorySet }} />
 			</Show>
 			{isList() ?
 				<List categories={categories} articlesGet={articlesGet}
@@ -189,7 +190,7 @@ function Page(props) {
 				<NewArticle text={stateGet().storedText}
 					title={stateGet().storedTitle}
 					author={stateGet().storedAuthorname}
-					modeSet={modeSet}
+					{...{ modeSet }}
 					categories={categories()}
 					send={storeArticle}
 				/>}
@@ -197,31 +198,13 @@ function Page(props) {
 			<Show when={isList()}>
 				<PaginationBar
 					categoriesState={currentSelectCategoriesSide}
-					modeGet={modeGet}
-					modeSet={modeSet}
-					scrollUp={scrollUp}
-					articlesGet={articlesGet}
-					pageNumBtnClickHandler={pageNumBtnClickHandler} />
+					{...{
+						modeGet, modeSet, scrollUp, articlesGet,
+						pageNumBtnClickHandler
+					}} />
 			</Show>
 			<Footer />
 		</div>);
-}
-
-
-function Header() {
-	return (
-		<header className='header header_theme_1'>
-			<div className='header__body header__body_theme_1'>
-				<div className='header__logo-side header__logo-side_theme_1'>
-					<div className='header__logo header__logo_theme_1'>
-						<p>LOGO</p><p>TYPE</p>
-					</div>
-				</div>
-				<div className='header__title header__title_theme_1'>
-					Header Name
-				</div>
-			</div>
-		</header>);
 }
 
 
@@ -294,10 +277,14 @@ function EditableArticle(props) {
 }
 
 
+// declare type ie = MouseEvent & {currentTarget: HTMLTextAreaElement};
+
 function MenuSend(props) {
 
-	const handleSendClick = evt => {
-		const article = evt.target.parentNode.parentNode.parentNode
+	const handleSendClick =
+		(evt /*: PointerEvent */) /*: void*/ => {
+
+		const article = evt.target.parentNode.parentNode.parentNode;
 		const title = article
 			.getElementsByClassName('credits__editable-title')[ONLY].value;
 		const author = article
@@ -306,7 +293,7 @@ function MenuSend(props) {
 		const categories = props.categories.get();
 		const ids = Object.keys(categories);
 
-		let category_id = 0;
+		let category_id = '0';
 		for (const id of ids)
 			if (categories[id].checked)
 				category_id = id;
@@ -315,7 +302,7 @@ function MenuSend(props) {
 		category_title = category_title.label || 'none';
 
 		if (category_title === 'none')
-			category_id = 0;
+			category_id = '0';
 
 		props.send(title, category_id, category_title, author, text);
 
@@ -696,9 +683,6 @@ function _storeArticle(title = 'No title', category_id = 0,
 
 	ajax(() => console.log('Successfully sent'), storeUrl, 'POST', postData);
 }
-
-
-function noop() { }
 
 
 const loremIpsum =

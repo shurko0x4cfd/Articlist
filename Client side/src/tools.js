@@ -1,8 +1,5 @@
 
-const ONLY = 0;
-
 /** Shortcut for console.log  */
-const cl = console.log;
 
 const homeUrl = 'http://localhost:4000/web/index.php?r=article/';
 const fetchUrl = 'loadart';
@@ -32,4 +29,4 @@ function ajax(onSucceess = () => { }, url = fetchUrl,
 }
 
 
-export { ONLY, cl, homeUrl, fetchUrl, storeUrl, ajax };
+export { homeUrl, fetchUrl, storeUrl, ajax };
