@@ -20,7 +20,7 @@ const state =
 
 const [stateGet] = createSignal(state);
 
-function Page(props /*: Object */) {
+function Page(props /*: any */) /*: HTMLElement */ {
 	const stub =
 	{
 		items: [],
@@ -48,14 +48,14 @@ function Page(props /*: Object */) {
 
 	const [currentCategoryGet, currentCategorySet] = createSignal(0);
 	const [modeGet, modeSet] = createSignal('list');
-	const currentSelectCategoriesSide = new signalObject('folded');
+	const currentSelectCategoriesSide /*: oSign */ = signalObject('folded');
 
 	const drawSelectCategoriesSide = () => modeGet() === 'edit' ||
 		currentSelectCategoriesSide.get() !== 'folded';
 
 	// Текущие настройки фильтрации
 	// Пока захардкожено, но можно переместить на бэк
-	const hasCategoryMgr = signalObject({
+	const hasCategoryMgr /*: oSign */ = signalObject({
 		'0': { label: 'Any', checked: true },
 		'1': { label: 'Category 1', checked: false },
 		'2': { label: 'Category 2', checked: false },
@@ -66,7 +66,7 @@ function Page(props /*: Object */) {
 	const selectedCategories = () => {
 		const has = hasCategoryMgr.get();
 		const ids = Object.keys(has);
-		const copy = {};
+		const copy /*: {[string]: string} */ = { id: '' };
 
 		for (const id of ids)
 			copy[id] = { ...(has[id] || {}) };
@@ -78,18 +78,18 @@ function Page(props /*: Object */) {
 	 *  Копируем настоящие настройки фильтрации в ещё не применённые,
 	 *  отображаемые на панели настроек
 	 */
-	const editCategoryMgr = signalObject(selectedCategories());
+	const editCategoryMgr /*: oSign */ = signalObject(selectedCategories());
 
 	// Какие категории добавить в новую статью из тех, что есть
 	// По умолчанию никакие
-	const addCategoryMgr = signalObject({
+	const addCategoryMgr /*: oSign */ = signalObject({
 		'1': { label: 'Category 1', checked: false },
 		'2': { label: 'Category 2', checked: false },
 	});
 
-	const isList /*: boolean */ = () => modeGet() === 'list';
+	const isList /*: Function */ = (u /*: void */) /*: boolean  */ => modeGet() === 'list';
 
-	const categories /*: Object*/ = () =>
+	const categories /*: Function */ = (u /*: void */) /*: oSign  */ =>
 		isList() ? editCategoryMgr : addCategoryMgr;
 
 	/** Этот вариант допускает множественный выбор категорий */
@@ -110,7 +110,7 @@ function Page(props /*: Object */) {
 	const updateCategoriesLight = (categories /*: Object*/, idNew /*: string*/) => {
 		const source = categories.get();
 		const ids = Object.keys(source);
-		const dest = {};
+		const dest /*: {[string]: any} */ = {};
 
 		for (const id of ids) {
 			dest[id] = {};
@@ -155,11 +155,14 @@ function Page(props /*: Object */) {
 
 
 	function storeArticle(title /*: string*/,
-		category_id, category_title, author /*: string*/, text) {
+		category_id /*: string */,
+		category_title /*: string */,
+		author /*: string */,
+		text /*: string */) {
 		_storeArticle(title, category_id, category_title, author, text);
 	}
 
-	function pageNumBtnClickHandler(evt /*: any*/) {
+	function pageNumBtnClickHandler(evt /*: any */) {
 		const pageNum = evt.target.innerText || '1';
 		loadArticles('&page=' + pageNum, '&category=' + currentCategoryGet());
 	}
@@ -184,9 +187,7 @@ function Page(props /*: Object */) {
 					{...{ currentCategorySet }} />
 			</Show>
 			{isList() ?
-				<List categories={categories} articlesGet={articlesGet}
-					articlesSet={articlesSet}
-				/> :
+				<List {...{ categories, articlesGet, articlesSet }} /> :
 				<NewArticle text={stateGet().storedText}
 					title={stateGet().storedTitle}
 					author={stateGet().storedAuthorname}
@@ -208,7 +209,7 @@ function Page(props /*: Object */) {
 }
 
 
-function Footer() {
+function Footer(v /*: void */) /*: HTMLElement */ {
 	return (
 		<div className='footer'>
 			<footer className='footer footer__body footer__body_theme_1'>
@@ -218,7 +219,7 @@ function Footer() {
 }
 
 
-function List(props /*: Object*/) {
+function List(props /*: any */) {
 	const items = () => props.articlesGet.articles.items;
 
 	return (
@@ -237,11 +238,12 @@ function List(props /*: Object*/) {
 		</div>);
 }
 
-function NewArticle(props /*: Object*/) {
+function NewArticle(props /*: any */) {
 	return (
 		<div className='new-article new-article_theme_1'>
 			<div className='new-article__body_theme_1'>
-				<EditableArticle text={props.text}
+				<EditableArticle
+					text={props.text}
 					title={props.title}
 					author={props.author}
 					modeSet={props.modeSet}
@@ -254,7 +256,7 @@ function NewArticle(props /*: Object*/) {
 	);
 }
 
-function EditableArticle(props /*: Object*/) {
+function EditableArticle(props /*: any */) {
 	return (
 		<div className='editable-article-container'>
 			<article className='editable-article article_theme_1 
@@ -280,7 +282,7 @@ function EditableArticle(props /*: Object*/) {
 // declare type ie = MouseEvent & {currentTarget: HTMLTextAreaElement};
 
 
-function MenuSend(props /*: Object*/) {
+function MenuSend(props /*: any */) {
 
 	const handleSendClick =
 		(evt /*: any */) /*: void*/ => {
@@ -336,7 +338,7 @@ function MenuSend(props /*: Object*/) {
 
 
 // $FlowIgnore
-function EditableCredits(props /*: Object*/) {
+function EditableCredits(props /*: any */) {
 	return (
 		<div className='credits-container'>
 			<header className='credits credits__theme_1'>
@@ -362,7 +364,7 @@ function EditableCredits(props /*: Object*/) {
 
 
 // $FlowIgnore
-function Article(props /*: Object*/) /*: JSX$Element*/ {
+function Article(props /*: any */) {
 	return (
 		<div className='article-container'>
 			<article className='article article_theme_1 
@@ -384,7 +386,7 @@ function Article(props /*: Object*/) /*: JSX$Element*/ {
 
 
 // $FlowIgnore
-function Credits(props /*: Object*/) {
+function Credits(props /*: any */) {
 	return (
 		<div className='credits-container'>
 			<header className='credits__theme_1'>
@@ -416,7 +418,7 @@ function Credits(props /*: Object*/) {
 }
 
 
-function Categories(props /*: Object*/) {
+function Categories(props /*: any */) {
 	return (
 		<div className='categories-container'>
 			<fiiter className='categories categories_theme_1'>
@@ -429,7 +431,7 @@ function Categories(props /*: Object*/) {
 }
 
 
-function CategoriesList(props /*: Object*/) {
+function CategoriesList(props /*: any */) {
 	const categoryTitle = props.categoryTitle || <Tag category={{ label: 'none' }} />;
 
 	return (
@@ -443,7 +445,7 @@ function CategoriesList(props /*: Object*/) {
 }
 
 
-function Tag(props /*: Object*/) {
+function Tag(props /*: any */) {
 	return (
 		<div className='tag'>
 			<div className='tag__text tag__text_theme_1'>
@@ -457,7 +459,7 @@ function Tag(props /*: Object*/) {
 }
 
 
-function PaginationBar(props /*: Object*/) {
+function PaginationBar(props /*: any */) {
 	const numbeRange = { from: 1, to: props.articlesGet.articles._meta.pageCount };
 	const hightLightPages = () => props.articlesGet.articles._meta.currentPage;
 
@@ -506,19 +508,22 @@ function PaginationBar(props /*: Object*/) {
 }
 
 
-function numbers(numbeRange, hightLightPages, pageNumBtnClickHandler) {
-	const numbers = [];
+function numbers(numbeRange /*: {from: number, to: number}  */,
+	hightLightPages /*: Function  */,
+	pageNumBtnClickHandler /*: Function */) {
+
+	const numbers /*: Array<Function> */ = [];
+
 	for (let number = numbeRange.from; number <= numbeRange.to; number++) {
-		numbers.push(<PageNumber number={number}
-			hightLightPages={hightLightPages}
-			pageNumBtnClickHandler={pageNumBtnClickHandler} />);
+		numbers.push(<PageNumber
+			{...{ number, hightLightPages, pageNumBtnClickHandler }} />);
 	}
 
 	return numbers;
 }
 
 
-function PageNumber(props /*: Object*/) {
+function PageNumber(props /*: any */) {
 	const { pageNumBtnClickHandler } = props;
 	const hightlighted = () => // ! сравнение нестрогое
 		props.hightLightPages() == props.number ? ' highlighted-button ' : '';
@@ -566,10 +571,10 @@ function PaginationButtonForward() {
 		</div>);
 }
 
-function SelectCategoriesSide(props /*: Object*/) {
+function SelectCategoriesSide(props /*: any */) {
 
 	const categoryItems = () => {
-		const entries = Object.entries(props.categories.get());
+		const entries /*: Array<[string, any]> */ = Object.entries(props.categories.get());
 
 		return entries.map(ent =>
 			<CategoryItem id={ent[0]}
@@ -594,7 +599,7 @@ function SelectCategoriesSide(props /*: Object*/) {
 }
 
 
-function MenuFilter(props /*: Object*/) {
+function MenuFilter(props /*: any */) {
 	const { cancel, apply } = props;
 	return (
 		<menu className='menu-filter menu-filter_theme_1'>
@@ -623,7 +628,7 @@ function MenuFilter(props /*: Object*/) {
 // В css [role="button"]:focus {outline: none;}
 
 
-function CategoryItem(props /*: Object*/) {
+function CategoryItem(props /*: any */) {
 	/*
 		// Вариант хороший, но не точно соответствует заданию - допускает
 		// множественный выбор категорий
@@ -642,13 +647,14 @@ function CategoryItem(props /*: Object*/) {
 	 */
 
 	/** Этот вариант не допускает множественный выбор категорий */
-	const checkBoxClickHandlerLight = ({ target } /*: HTMLInputElement */) => {
-		const id = target.id;
-		props.upd(id);
+	const checkBoxClickHandlerLight =
+		({ target } /*: {target: {id: string}} */) => {
+			const id = target.id;
+			props.upd(id);
 
-		props.mode() === 'list' &&
-			props.currentCategorySet(id);
-	}
+			props.mode() === 'list' &&
+				props.currentCategorySet(id);
+		}
 
 	return (
 		<li className='category-item'>
@@ -668,9 +674,18 @@ function CategoryItem(props /*: Object*/) {
 // 		Object.freeze({ get, set });
 
 
-function signalObject(arg /*: any  */) /*: Object */ {
+/*::
+type oSign = {
+	get: Function,
+	set: Function,
+};
+*/
+
+
+function signalObject(arg /*: any  */) /*: oSign */ {
 	const [get, set] = createSignal(arg);
-	return Object.freeze({ get, set });
+	const oSign /*: oSign */ = Object.freeze({ get, set });
+	return oSign;
 }
 
 
@@ -680,12 +695,12 @@ const scrollUp = () =>
 
 
 function _storeArticle(title /*: string */ = 'No title',
-	category_id /*: number */ = 0,
+	category_id /*: string */ = '0',
 	category_title /*: string */,
 	author /*: string */ = 'Unknown author',
 	text /*: string */ = 'No text') /*: void */ {
 
-	const postData /*: Object*/ =
+	const postData /*: any */ =
 	{
 		title,
 		category:
@@ -708,7 +723,7 @@ const loremIpsum =
 /** Пробуем сгенерировать статьи  */
 function initTable() {
 	for (let i = 1; i < 45; i++)
-		_storeArticle('Title ' + i, 0, 'none', 'Author ' + i, loremIpsum);
+		_storeArticle('Title ' + i, '0', 'none', 'Author ' + i, loremIpsum);
 }
 
 
@@ -720,6 +735,7 @@ function initTable() {
 // Пофиксить фильтрацию
 // Пофиксить имена классов css
 // Убрать секунды из даты
+// Не обновилось после отправки
 
 
 export default Page;
