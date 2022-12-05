@@ -8,7 +8,14 @@ import './assets/add-article.png';
 import { fetchUrl, storeUrl, ajax } from "./tools";
 import { ONLY, noop, cl } from 'raffinade';
 
-import Header from './components/Header/header.jsx'
+import Header from './components/Header/header.jsx';
+import Footer from './components/Footer/footer.jsx';
+import PaginationBar from './components/PaginationBar/pagination-bar.jsx';
+import PaginationButtonBack
+	from './components/PaginationButtonBack/pagination-button-back.jsx';
+import PaginationButtonForward
+	from './components/PaginationButtonForward/pagination-button-forward.jsx';
+import PageNumber from './components/PageNumber/page-number.jsx';
 
 
 const state =
@@ -173,7 +180,8 @@ function Page(props /*: any */) /*: HTMLElement */ {
 			<Show when={isList()}>
 				<PaginationBar
 					categoriesState={currentSelectCategoriesSide}
-					{...{ modeGet, modeSet, articlesGet, pageNumBtnClickHandler }}
+					{...{ modeGet, modeSet, articlesGet, pageNumBtnClickHandler,
+						PaginationButtonBack, PaginationButtonForward, PageNumber }}
 					scrollUp={noop} />
 			</Show>
 			<Show when={drawSelectCategoriesSide()}>
@@ -205,16 +213,6 @@ function Page(props /*: any */) /*: HTMLElement */ {
 					}} />
 			</Show>
 			<Footer />
-		</div>);
-}
-
-
-function Footer(v /*: void */) /*: HTMLElement */ {
-	return (
-		<div className='footer'>
-			<footer className='footer footer__body footer__body_theme_1'>
-				{/* Footer */}
-			</footer>
 		</div>);
 }
 
@@ -337,7 +335,6 @@ function MenuSend(props /*: any */) {
 }
 
 
-// $FlowIgnore
 function EditableCredits(props /*: any */) {
 	return (
 		<div className='credits-container'>
@@ -363,7 +360,6 @@ function EditableCredits(props /*: any */) {
 }
 
 
-// $FlowIgnore
 function Article(props /*: any */) {
 	return (
 		<div className='article-container'>
@@ -385,7 +381,6 @@ function Article(props /*: any */) {
 }
 
 
-// $FlowIgnore
 function Credits(props /*: any */) {
 	return (
 		<div className='credits-container'>
@@ -458,118 +453,6 @@ function Tag(props /*: any */) {
 
 }
 
-
-function PaginationBar(props /*: any */) {
-	const numbeRange = { from: 1, to: props.articlesGet.articles._meta.pageCount };
-	const hightLightPages = () => props.articlesGet.articles._meta.currentPage;
-
-	const filterClickHandler = () => {
-		props.scrollUp();
-
-		let state = props.categoriesState.get();
-		state = state === 'folded' ? 'unfolded' : 'folded';
-		props.categoriesState.set(state);
-	}
-
-	const addClickHandler = () => {
-		let state = props.modeGet();
-		state = state === 'list' ? 'edit' : 'list';
-		props.modeSet(state);
-	}
-
-	return (
-		<nav className={'pagination-bar pagination-bar_theme_1'}>
-			<div className='pagination-bar__filter_theme_1'
-				onClick={filterClickHandler}>
-
-				<img className='funnel-16' src='./src/assets/funnel.svg' />
-				<h4 className='button2-like button2-like_theme_1'>
-					filter by categoriy
-				</h4>
-			</div>
-			<div className='pagination-bar__controls_theme_1'>
-				<PaginationButtonBack />
-
-				<div className='pagination-bar__numbers_theme_1'>
-					{numbers(numbeRange, hightLightPages, props.pageNumBtnClickHandler)}
-				</div>
-
-				<PaginationButtonForward />
-			</div>
-			<div className='pagination-bar__add-article_theme_1'
-				onClick={addClickHandler}>
-
-				<img className='funnel-16' src='./src/assets/add-article-2.png' />
-				<h4 className='button2-like button2-like_theme_1'>
-					add article
-				</h4>
-			</div>
-		</nav>);
-}
-
-
-function numbers(numbeRange /*: {from: number, to: number}  */,
-	hightLightPages /*: Function  */,
-	pageNumBtnClickHandler /*: Function */) {
-
-	const numbers /*: Array<Function> */ = [];
-
-	for (let number = numbeRange.from; number <= numbeRange.to; number++) {
-		numbers.push(<PageNumber
-			{...{ number, hightLightPages, pageNumBtnClickHandler }} />);
-	}
-
-	return numbers;
-}
-
-
-function PageNumber(props /*: any */) {
-	const { pageNumBtnClickHandler } = props;
-	const hightlighted = () => // ! сравнение нестрогое
-		props.hightLightPages() == props.number ? ' highlighted-button ' : '';
-
-	return (
-		<div className='page-number-container'>
-			<div className='page-number page-number_theme_1'>
-				<a className={'button-like button-like_theme_1 ' + hightlighted()}
-					role='button'
-					tabindex='0'
-					onClick={pageNumBtnClickHandler}
-					onKeyDown={pageNumBtnClickHandler}>
-
-					{props.number}
-				</a>
-			</div>
-		</div>);
-}
-
-// 
-function PaginationButtonBack() {
-	return (
-		<div className='pgb-back-container'>
-			<div className='pgb-back'>
-				<div className='page-number_theme_1 
-					pgb-back__item-back_theme_1 
-					button-like_theme_1'>
-
-					{/* {'🢐🢐🢐 prev'} */}
-				</div>
-			</div>
-		</div>);
-}
-
-function PaginationButtonForward() {
-	return (
-		<div className='pgb-forward-container'>
-			<div className='pgb-forward'>
-				<div className='pgb-forward__body 
-					page-number_theme_1  button-like_theme_1'>
-
-					{/* {'next 🢒🢒🢒'} */}
-				</div>
-			</div>
-		</div>);
-}
 
 function SelectCategoriesSide(props /*: any */) {
 

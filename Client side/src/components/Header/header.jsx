@@ -1,10 +1,9 @@
 /* @flow */
+var Header/*: Function */;
 
-var Header;
+import './header_theme_1.less';
 
-import './theme_1.less';
-
-export default Header = function() {
+export default Header = function(v/*: void */)/*: HTMLElement */ {
   return <header className='header header_theme_1'>
 		<div className='header__body header__body_theme_1'>
 			<div className='header__logo-side header__logo-side_theme_1'>

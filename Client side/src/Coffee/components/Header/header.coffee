@@ -1,8 +1,9 @@
+### @flow ###
 
-import './theme_1.less'
+import './header_theme_1.less'
 
 
-export default Header = ()###  ### ->
+export default Header ###: Function ### = (v ###: void ###) ###: HTMLElement ### ->
 	<header className='header header_theme_1'>
 		<div className='header__body header__body_theme_1'>
 			<div className='header__logo-side header__logo-side_theme_1'>
