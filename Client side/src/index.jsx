@@ -5,7 +5,7 @@ import { ajax } from "./tools";
 import { ONLY } from 'raffinade';
 
 
-const start =
+const start: Object =
 	xhr => {
 		const text = xhr.responseText;
 		const articles = JSON.parse(text);

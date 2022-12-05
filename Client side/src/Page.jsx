@@ -1,4 +1,6 @@
-/* @flow */
+// @flow
+/* eslint-disable  */
+/* flow */
 
 import { createSignal } from "solid-js";
 import { createStore } from "solid-js/store";
@@ -20,8 +22,11 @@ const state =
 
 const [stateGet] = createSignal(state);
 
+let a /*: string */ = 'asdf';
+a = 14;
 
-function Page(props) {
+
+function Page(props: Object) {
 	const stub =
 	{
 		items: [],
@@ -34,7 +39,7 @@ function Page(props) {
 	const articles = props.articles || stub;
 	const [articlesGet, articlesSet] = createStore({ articles });
 
-	const loadArticles = (pageNum = '', category = '') =>
+	const loadArticles = (pageNum /*: string*/ = '', category /*: string*/ = '') =>
 		ajax(xhr => articlesSet('articles', () => JSON.parse(xhr.responseText)),
 			fetchUrl + pageNum + category);
 
@@ -88,9 +93,9 @@ function Page(props) {
 		'2': { label: 'Category 2', checked: false },
 	});
 
-	const isList = ()/*: boolean */ => modeGet() === 'list';
+	const isList /*: boolean */ = () => modeGet() === 'list';
 
-	const categories = ()/*: Readonly */ =>
+	const categories /*: Object*/ = () =>
 		isList() ? editCategoryMgr : addCategoryMgr;
 
 	/** Этот вариант допускает множественный выбор категорий */
@@ -108,7 +113,7 @@ function Page(props) {
 	*/
 
 	/** Этот вариант не допускает множественный выбор категорий */
-	const updateCategoriesLight = (categories, idNew) => {
+	const updateCategoriesLight = (categories /*: Object*/, idNew /*: string*/) => {
 		const source = categories.get();
 		const ids = Object.keys(source);
 		const dest = {};
@@ -155,12 +160,13 @@ function Page(props) {
 	}
 
 
-	function storeArticle(title, category_id, category_title, author, text) {
+	function storeArticle(title /*: string*/,
+		category_id, category_title, author /*: string*/, text) {
 		_storeArticle(title, category_id, category_title, author, text);
 	}
 
-	function pageNumBtnClickHandler(evt) {
-		const pageNum = evt.target.innerText || 1;
+	function pageNumBtnClickHandler(evt /*: any*/) {
+		const pageNum = evt.target.innerText || '1';
 		loadArticles('&page=' + pageNum, '&category=' + currentCategoryGet());
 	}
 
@@ -218,7 +224,7 @@ function Footer() {
 }
 
 
-function List(props) {
+function List(props /*: Object*/) {
 	const items = () => props.articlesGet.articles.items;
 
 	return (
@@ -237,7 +243,7 @@ function List(props) {
 		</div>);
 }
 
-function NewArticle(props) {
+function NewArticle(props /*: Object*/) {
 	return (
 		<div className='new-article new-article_theme_1'>
 			<div className='new-article__body_theme_1'>
@@ -254,7 +260,7 @@ function NewArticle(props) {
 	);
 }
 
-function EditableArticle(props) {
+function EditableArticle(props /*: Object*/) {
 	return (
 		<div className='editable-article-container'>
 			<article className='editable-article article_theme_1 
@@ -279,35 +285,41 @@ function EditableArticle(props) {
 
 // declare type ie = MouseEvent & {currentTarget: HTMLTextAreaElement};
 
-function MenuSend(props) {
+
+function MenuSend(props /*: Object*/) {
 
 	const handleSendClick =
-		(evt /*: PointerEvent */) /*: void*/ => {
+		(evt /*: any */) /*: void*/ => {
 
-		const article = evt.target.parentNode.parentNode.parentNode;
-		const title = article
-			.getElementsByClassName('credits__editable-title')[ONLY].value;
-		const author = article
-			.getElementsByClassName('credits__editable-author-name')[ONLY].value;
-		const text = article.getElementsByTagName('textarea')[ONLY].value;
-		const categories = props.categories.get();
-		const ids = Object.keys(categories);
+			let article /*: Element  */;
+			if (!evt?.target?.parentElement?.parentNode?.parentNode)
+				return;
+			article = evt?.target?.parentNode?.parentNode?.parentNode;
 
-		let category_id = '0';
-		for (const id of ids)
-			if (categories[id].checked)
-				category_id = id;
+			const title /*: string  */ = article
+				.getElementsByClassName('credits__editable-title')[ONLY]?.value || '';
 
-		let category_title = categories[category_id] || {};
-		category_title = category_title.label || 'none';
+			const author = article
+				.getElementsByClassName('credits__editable-author-name')[ONLY].value;
+			const text = article.getElementsByTagName('textarea')[ONLY].value;
+			const categories = props.categories.get();
+			const ids = Object.keys(categories);
 
-		if (category_title === 'none')
-			category_id = '0';
+			let category_id = '0';
+			for (const id of ids)
+				if (categories[id].checked)
+					category_id = id;
 
-		props.send(title, category_id, category_title, author, text);
+			let category_title = categories[category_id] || {};
+			category_title = category_title.label || 'none';
 
-		props.modeSet('list');
-	};
+			if (category_title === 'none')
+				category_id = '0';
+
+			props.send(title, category_id, category_title, author, text);
+
+			props.modeSet('list');
+		};
 
 	return (
 		<div className='menu-send menu-send_theme_1'>
@@ -329,7 +341,8 @@ function MenuSend(props) {
 }
 
 
-function EditableCredits(props) {
+// $FlowIgnore
+function EditableCredits(props /*: Object*/) {
 	return (
 		<div className='credits-container'>
 			<header className='credits credits__theme_1'>
@@ -353,25 +366,31 @@ function EditableCredits(props) {
 		</div>);
 }
 
-function Article(props) {
+
+// $FlowIgnore
+function Article(props /*: Object*/) /*: JSX$Element*/ {
 	return (
 		<div className='article-container'>
 			<article className='article article_theme_1 
 				article_corner_rounded_3'>
 
+				{/* $FlowIgnore */}
 				<Credits title={props.title} author={props.author}
 					dateTime={props.dateTime} />
 
 				<div className='article-element article-element_theme_1'>
 					{props.text}
 				</div>
+
+				{/* $FlowIgnore */}
 				<Categories categoryTitle={props.categoryTitle} />
 			</article>
 		</div>);
 }
 
 
-function Credits(props) {
+// $FlowIgnore
+function Credits(props /*: Object*/) {
 	return (
 		<div className='credits-container'>
 			<header className='credits__theme_1'>
@@ -403,7 +422,7 @@ function Credits(props) {
 }
 
 
-function Categories(props) {
+function Categories(props /*: Object*/) {
 	return (
 		<div className='categories-container'>
 			<fiiter className='categories categories_theme_1'>
@@ -416,7 +435,7 @@ function Categories(props) {
 }
 
 
-function CategoriesList(props) {
+function CategoriesList(props /*: Object*/) {
 	const categoryTitle = props.categoryTitle || <Tag category={{ label: 'none' }} />;
 
 	return (
@@ -430,7 +449,7 @@ function CategoriesList(props) {
 }
 
 
-function Tag(props) {
+function Tag(props /*: Object*/) {
 	return (
 		<div className='tag'>
 			<div className='tag__text tag__text_theme_1'>
@@ -444,7 +463,7 @@ function Tag(props) {
 }
 
 
-function PaginationBar(props) {
+function PaginationBar(props /*: Object*/) {
 	const numbeRange = { from: 1, to: props.articlesGet.articles._meta.pageCount };
 	const hightLightPages = () => props.articlesGet.articles._meta.currentPage;
 
@@ -505,7 +524,7 @@ function numbers(numbeRange, hightLightPages, pageNumBtnClickHandler) {
 }
 
 
-function PageNumber(props) {
+function PageNumber(props /*: Object*/) {
 	const { pageNumBtnClickHandler } = props;
 	const hightlighted = () => // ! сравнение нестрогое
 		props.hightLightPages() == props.number ? ' highlighted-button ' : '';
@@ -553,7 +572,7 @@ function PaginationButtonForward() {
 		</div>);
 }
 
-function SelectCategoriesSide(props) {
+function SelectCategoriesSide(props /*: Object*/) {
 
 	const categoryItems = () => {
 		const entries = Object.entries(props.categories.get());
@@ -581,7 +600,7 @@ function SelectCategoriesSide(props) {
 }
 
 
-function MenuFilter(props) {
+function MenuFilter(props /*: Object*/) {
 	const { cancel, apply } = props;
 	return (
 		<menu className='menu-filter menu-filter_theme_1'>
@@ -610,7 +629,7 @@ function MenuFilter(props) {
 // В css [role="button"]:focus {outline: none;}
 
 
-function CategoryItem(props) {
+function CategoryItem(props /*: Object*/) {
 	/*
 		// Вариант хороший, но не точно соответствует заданию - допускает
 		// множественный выбор категорий
@@ -629,8 +648,8 @@ function CategoryItem(props) {
 	 */
 
 	/** Этот вариант не допускает множественный выбор категорий */
-	const checkBoxClickHandlerLight = evt => {
-		const id = evt.target.id;
+	const checkBoxClickHandlerLight = (target /*: HTMLInputElement */) => {
+		const id = target.id;
 		props.upd(id);
 
 		props.mode() === 'list' &&
@@ -655,7 +674,7 @@ function CategoryItem(props) {
 // 		Object.freeze({ get, set });
 
 
-function signalObject(arg) {
+function signalObject(arg /*: any  */) /*: Object */ {
 	const [get, set] = createSignal(arg);
 	return Object.freeze({ get, set });
 }
@@ -663,13 +682,16 @@ function signalObject(arg) {
 
 const scrollUp = () =>
 	setTimeout(() =>
-		document.getElementsByTagName('html')[ONLY].scroll(undefined, 0));
+		document.getElementsByTagName('html')[ONLY].scroll(0, 0));
 
 
-function _storeArticle(title = 'No title', category_id = 0,
-	category_title, author = 'Unknown author', text = 'No text') {
+function _storeArticle(title /*: string */ = 'No title',
+	category_id /*: number */ = 0,
+	category_title /*: string */,
+	author /*: string */ = 'Unknown author',
+	text /*: string */ = 'No text') /*: void */ {
 
-	const postData =
+	const postData /*: Object*/ =
 	{
 		title,
 		category:

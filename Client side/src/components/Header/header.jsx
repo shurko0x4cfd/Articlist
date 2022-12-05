@@ -1,8 +1,8 @@
-
-import './theme_1.less';
-
+/* @flow */
 
 var Header;
+
+import './theme_1.less';
 
 export default Header = function() {
   return <header className='header header_theme_1'>
