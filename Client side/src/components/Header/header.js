@@ -1,9 +1,9 @@
+var Header;
 
-import './theme_1.less'
+import './theme_1.less';
 
-
-export default Header = ()###  ### ->
-	<header className='header header_theme_1'>
+export default Header = function() {
+  return <header className='header header_theme_1'>
 		<div className='header__body header__body_theme_1'>
 			<div className='header__logo-side header__logo-side_theme_1'>
 				<div className='header__logo header__logo_theme_1'>
@@ -14,4 +14,5 @@ export default Header = ()###  ### ->
                 Header Name
             </div>
         </div>
-    </header>
+    </header>;
+};

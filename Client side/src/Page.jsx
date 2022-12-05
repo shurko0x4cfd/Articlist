@@ -1,6 +1,4 @@
 // @flow
-/* eslint-disable  */
-/* flow */
 
 import { createSignal } from "solid-js";
 import { createStore } from "solid-js/store";
@@ -22,11 +20,7 @@ const state =
 
 const [stateGet] = createSignal(state);
 
-let a /*: string */ = 'asdf';
-a = 14;
-
-
-function Page(props: Object) {
+function Page(props /*: Object */) {
 	const stub =
 	{
 		items: [],
@@ -54,7 +48,7 @@ function Page(props: Object) {
 
 	const [currentCategoryGet, currentCategorySet] = createSignal(0);
 	const [modeGet, modeSet] = createSignal('list');
-	const currentSelectCategoriesSide = signalObject('folded');
+	const currentSelectCategoriesSide = new signalObject('folded');
 
 	const drawSelectCategoriesSide = () => modeGet() === 'edit' ||
 		currentSelectCategoriesSide.get() !== 'folded';
@@ -648,7 +642,7 @@ function CategoryItem(props /*: Object*/) {
 	 */
 
 	/** Этот вариант не допускает множественный выбор категорий */
-	const checkBoxClickHandlerLight = (target /*: HTMLInputElement */) => {
+	const checkBoxClickHandlerLight = ({ target } /*: HTMLInputElement */) => {
 		const id = target.id;
 		props.upd(id);
 
