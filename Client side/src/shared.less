@@ -22,6 +22,15 @@ code {
 		monospace;
 }
 
+.bg-transparent {
+	background-color: rgba(0, 0, 0, 0);
+}
+
+.no-any-borders {
+	border-style: none;
+	outline-style: none;
+}
+
 .row {
 	display: flex;
 	flex-direction: row;
@@ -32,21 +41,22 @@ code {
 	flex-direction: column;
 }
 
+.fw-bold {
+	font-weight: bold;
+}
+
 div:hover {
 	cursor: default;
 }
 
 .page {
-	display: flex;
-	flex-direction: column;
+	.col;
 	width: 100%;
 }
 
 .list_theme_1 {
-	display: flex;
-	flex-direction: row;
+	.row;
 	justify-content: center;
-
 	background-color: bisque;
 }
 
@@ -271,6 +281,17 @@ div:hover {
 	padding-right: 8px;
 }
 
+.button-like_theme_1 {
+	.row;
+	.no-any-borders;
+    min-width: 24px;
+	margin: 0px 1px;
+	padding: 0px;
+	justify-content: center;
+	align-items: stretch;
+	background-color: coral;
+}
+
 .button-like_theme_1:hover {
 	background-color: green;
 	color: white;
@@ -315,7 +336,7 @@ div:hover {
 	color: white;
 }
 
-.dbg-red-border {
+.red-border {
 	border-style: dotted;
 	border-width: 1px;
 	border-color: red;

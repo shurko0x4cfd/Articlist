@@ -6,19 +6,16 @@ import './page-number_theme_1.less';
 export default PageNumber = function(props/*: any */)/*: HTMLElement */ {
   var hightlighted, pageNumBtnClickHandler;
   ({pageNumBtnClickHandler} = props);
-  hightlighted = function() { // ! сравнение должно быть нестрогое
+  hightlighted = function() {
     if (props.hightLightPages() === props.number.toString()) {
       return ' highlighted-button ';
     } else {
       return '';
     }
   };
-  return <div className='page-number-container'>
+  return <button className={'button-like button-like_theme_1 ' + hightlighted()} tabindex='0' onClick={pageNumBtnClickHandler} onKeyDown={pageNumBtnClickHandler}>
 		<div className='page-number page-number_theme_1'>
-			<a className={'button-like button-like_theme_1 ' + hightlighted()} role='button' tabindex='0' onClick={pageNumBtnClickHandler} onKeyDown={pageNumBtnClickHandler}>
-
-				{props.number}
-			</a>
+			{props.number}
 		</div>
-	</div>;
+	</button>;
 };

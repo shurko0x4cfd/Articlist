@@ -20,7 +20,7 @@ export default PaginationBar = (props ###: any ###) ###: HTMLElement ### ->
 		props.scrollUp()
 
 		state = props.categoriesState.get()
-		state = state == 'folded' ? 'unfolded' : 'folded'
+		state = if state == 'folded' then 'unfolded' else 'folded'
 		props.categoriesState.set(state)
 
 	addClickHandler = ->
@@ -28,8 +28,8 @@ export default PaginationBar = (props ###: any ###) ###: HTMLElement ### ->
 		state = state == 'list' ? 'edit' : 'list';
 		props.modeSet(state);
 
-	<nav className={'pagination-bar pagination-bar_theme_1'}>
-		<div className='pagination-bar__filter_theme_1'
+	<nav className='pagination-bar pagination-bar_theme_1'>
+		<div className='pagination-bar__filter pagination-bar__filter_theme_1'
 			onClick={filterClickHandler}>
 
 			<img className='funnel-16' src='./src/assets/funnel.svg' />
@@ -37,16 +37,16 @@ export default PaginationBar = (props ###: any ###) ###: HTMLElement ### ->
 				filter by categoriy
 			</h4>
 		</div>
-		<div className='pagination-bar__controls_theme_1'>
+		<div className='pagination-bar__controls pagination-bar__controls_theme_1'>
 			{props.PaginationButtonBack}
 
-			<div className='pagination-bar__numbers_theme_1'>
+			<div className='pagination-bar__numbers pagination-bar__numbers_theme_1'>
 				{numbers(numbeRange, hightLightPages, props.pageNumBtnClickHandler)}
 			</div>
 
 			{props.PaginationButtonForward}
 		</div>
-		<div className='pagination-bar__add-article_theme_1'
+		<div className='pagination-bar__add-article pagination-bar__add-article_theme_1'
 			onClick={addClickHandler}>
 
 			<img className='funnel-16' src='./src/assets/add-article-2.png' />
