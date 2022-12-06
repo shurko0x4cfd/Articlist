@@ -3,10 +3,10 @@
 import './page-number_theme_1.less'
 
 
-export default PageNumber = (props ###: any ###) ###: HTMLElement ### ->
-	{ pageNumBtnClickHandler } = props
+export default PageNumber ###: Function ### = (props ###: any ###) ###: HTMLElement ### ->
+	{ pageNumBtnClickHandler ###: Function ### } = props
 
-	hightlighted = ->
+	hightlighted ###: Function ### = (v ###: void ###) ###: string ### ->
 		if props.hightLightPages() == props.number.toString()
 		then ' highlighted-button '
 		else ''

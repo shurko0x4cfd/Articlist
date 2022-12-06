@@ -2,31 +2,37 @@
 
 import PageNumber from '../PageNumber/page-number.jsx'
 import './pagination-bar_theme_1.less'
-import { ONE } from 'raffinade'
+import { ONE, u, cl } from 'raffinade'
 
 
 numbers = (numbeRange ###: {from: number, to: number}  ###,
-	hightLightPages ###: Function ###,
+	hightLightPages ###: number ###,
 	pageNumBtnClickHandler ###: Function ###) ->
 
-	<PageNumber {...{ number, hightLightPages, pageNumBtnClickHandler }} /> for number in [numbeRange.from..numbeRange.to]
+	<PageNumber {...{ number, hightLightPages, pageNumBtnClickHandler }} /> \
+		for number in [numbeRange.from..numbeRange.to]
 
 
 export default PaginationBar = (props ###: any ###) ###: HTMLElement ### ->
-	numbeRange = { from: ONE, to: props.articlesGet.articles._meta.pageCount }
-	hightLightPages = () -> props.articlesGet.articles._meta.currentPage
+	numbeRange ###: any ### =
+		from: ONE
+		to: props.articlesGet.articles._meta.pageCount
 
-	filterClickHandler = ->
+	hightLightPages ###: Function ### = (v ###: void ###) ###: string ### ->
+		cp = props.articlesGet.articles._meta.currentPage
+
+	filterClickHandler ###: Function ### = (evt ###: Event ###) ###: void ### ->
 		props.scrollUp()
 
-		state = props.categoriesState.get()
-		state = if state == 'folded' then 'unfolded' else 'folded'
-		props.categoriesState.set(state)
+		props.categoriesState.set (
+			if props.categoriesState.get() == 'folded'
+			then 'unfolded'
+			else 'folded')
+		u
 
-	addClickHandler = ->
-		state = props.modeGet();
-		state = state == 'list' ? 'edit' : 'list';
-		props.modeSet(state);
+	addClickHandler ###: Function ### = (evt ###: Event ###) ###: void ### ->
+		props.modeSet if props.modeGet() == 'list' then 'edit' else 'list'
+		u
 
 	<nav className='pagination-bar pagination-bar_theme_1'>
 		<div className='pagination-bar__filter pagination-bar__filter_theme_1'
@@ -38,17 +44,14 @@ export default PaginationBar = (props ###: any ###) ###: HTMLElement ### ->
 			</h4>
 		</div>
 		<div className='pagination-bar__controls pagination-bar__controls_theme_1'>
-			{props.PaginationButtonBack}
-
+				{props.PaginationButtonBack}
 			<div className='pagination-bar__numbers pagination-bar__numbers_theme_1'>
 				{numbers(numbeRange, hightLightPages, props.pageNumBtnClickHandler)}
 			</div>
-
-			{props.PaginationButtonForward}
+				{props.PaginationButtonForward}
 		</div>
 		<div className='pagination-bar__add-article pagination-bar__add-article_theme_1'
-			onClick={addClickHandler}>
-
+				onClick={addClickHandler}>
 			<img className='funnel-16' src='./src/assets/add-article-2.png' />
 			<h4 className='button2-like button2-like_theme_1'>
 				add article

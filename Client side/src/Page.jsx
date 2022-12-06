@@ -5,7 +5,7 @@ import { createStore } from "solid-js/store";
 import './shared.less';
 import './assets/funnel.svg';
 import './assets/add-article.png';
-import { fetchUrl, storeUrl, ajax } from "./tools";
+import { fetchUrl, storeUrl, ajax, loremIpsum } from "./tools";
 import { ONLY, noop, cl } from 'raffinade';
 
 import Header from './components/Header/header.jsx';
@@ -16,6 +16,7 @@ import PaginationButtonBack
 import PaginationButtonForward
 	from './components/PaginationButtonForward/pagination-button-forward.jsx';
 import PageNumber from './components/PageNumber/page-number.jsx';
+import List from './components/List/list.jsx';
 
 
 const state =
@@ -34,7 +35,7 @@ function Page(props /*: any */) /*: HTMLElement */ {
 		_meta:
 		{
 			pageCount: 0,
-			currentPage: 1
+			currentPage: '1'
 		}
 	};
 	const articles = props.articles || stub;
@@ -180,8 +181,10 @@ function Page(props /*: any */) /*: HTMLElement */ {
 			<Show when={isList()}>
 				<PaginationBar
 					categoriesState={currentSelectCategoriesSide}
-					{...{ modeGet, modeSet, articlesGet, pageNumBtnClickHandler,
-						PaginationButtonBack, PaginationButtonForward, PageNumber }}
+					{...{
+						modeGet, modeSet, articlesGet, pageNumBtnClickHandler,
+						PaginationButtonBack, PaginationButtonForward, PageNumber
+					}}
 					scrollUp={noop} />
 			</Show>
 			<Show when={drawSelectCategoriesSide()}>
@@ -195,7 +198,7 @@ function Page(props /*: any */) /*: HTMLElement */ {
 					{...{ currentCategorySet }} />
 			</Show>
 			{isList() ?
-				<List {...{ categories, articlesGet, articlesSet }} /> :
+				<List {...{ categories, articlesGet, articlesSet, Article }} /> :
 				<NewArticle text={stateGet().storedText}
 					title={stateGet().storedTitle}
 					author={stateGet().storedAuthorname}
@@ -209,30 +212,11 @@ function Page(props /*: any */) /*: HTMLElement */ {
 					categoriesState={currentSelectCategoriesSide}
 					{...{
 						modeGet, modeSet, scrollUp, articlesGet,
-						pageNumBtnClickHandler
+						pageNumBtnClickHandler, PaginationButtonBack,
+						PaginationButtonForward, PageNumber
 					}} />
 			</Show>
 			<Footer />
-		</div>);
-}
-
-
-function List(props /*: any */) {
-	const items = () => props.articlesGet.articles.items;
-
-	return (
-		<div className='list list_theme_1'>
-			<div className='list__body_theme_1'>
-				{items().map(itm =>
-					<Article text={itm.article}
-						title={itm.title}
-						author={itm.author}
-						dateTime={itm.published_at}
-						categories={props.categories()}
-						categoryTitle={(itm.category || {}).title || 'none'}
-					/>
-				)}
-			</div>
 		</div>);
 }
 
@@ -275,9 +259,6 @@ function EditableArticle(props /*: any */) {
 			</article>
 		</div>);
 }
-
-
-// declare type ie = MouseEvent & {currentTarget: HTMLTextAreaElement};
 
 
 function MenuSend(props /*: any */) {
@@ -366,7 +347,6 @@ function Article(props /*: any */) {
 			<article className='article article_theme_1 
 				article_corner_rounded_3'>
 
-				{/* $FlowIgnore */}
 				<Credits title={props.title} author={props.author}
 					dateTime={props.dateTime} />
 
@@ -374,7 +354,6 @@ function Article(props /*: any */) {
 					{props.text}
 				</div>
 
-				{/* $FlowIgnore */}
 				<Categories categoryTitle={props.categoryTitle} />
 			</article>
 		</div>);
@@ -599,8 +578,7 @@ function _storeArticle(title /*: string */ = 'No title',
 }
 
 
-const loremIpsum =
-	`Lorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt, ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit, qui in ea voluptate velit esse, quam nihil molestiae consequatur, vel illum, qui dolorem eum fugiat, quo voluptas nulla pariatur? At vero eos et accusamus et iusto odio dignissimos ducimus, qui blanditiis praesentium voluptatum deleniti atque corrupti, quos dolores et quas molestias excepturi sint, obcaecati cupiditate non provident, similique sunt in culpa, qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio, cumque nihil impedit, quo minus id, quod maxime placeat, facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet, ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.`;
+
 
 
 /** Пробуем сгенерировать статьи  */

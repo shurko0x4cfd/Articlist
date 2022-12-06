@@ -1,12 +1,12 @@
 /* @flow */
-var PageNumber;
+var PageNumber/*: Function */;
 
 import './page-number_theme_1.less';
 
 export default PageNumber = function(props/*: any */)/*: HTMLElement */ {
-  var hightlighted, pageNumBtnClickHandler;
+  var hightlighted/*: Function */, pageNumBtnClickHandler/*: Function */;
   ({pageNumBtnClickHandler} = props);
-  hightlighted = function() {
+  hightlighted = function(v/*: void */)/*: string */ {
     if (props.hightLightPages() === props.number.toString()) {
       return ' highlighted-button ';
     } else {
