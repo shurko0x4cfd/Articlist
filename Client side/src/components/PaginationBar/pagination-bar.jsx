@@ -5,6 +5,8 @@ import PageNumber from '../PageNumber/page-number.jsx';
 
 import './pagination-bar_theme_1.less';
 
+import './funnel-icon_theme_1.less';
+
 import {
   ONE,
   u,
@@ -42,7 +44,7 @@ export default PaginationBar = function(props/*: any */)/*: HTMLElement */ {
   return <nav className='pagination-bar pagination-bar_theme_1'>
 		<div className='pagination-bar__filter pagination-bar__filter_theme_1' onClick={filterClickHandler}>
 
-			<img className='funnel-16' src='./src/assets/funnel.svg' />
+			<img className='funnel-icon funnel-icon_theme_1' src='./src/assets/funnel.svg' />
 			<h4 className='button2-like button2-like_theme_1'>
 				filter by categoriy
 			</h4>
@@ -55,7 +57,7 @@ export default PaginationBar = function(props/*: any */)/*: HTMLElement */ {
 				{props.PaginationButtonForward}
 		</div>
 		<div className='pagination-bar__add-article pagination-bar__add-article_theme_1' onClick={addClickHandler}>
-			<img className='funnel-16' src='./src/assets/add-article-2.png' />
+			<img className='funnel-icon funnel-icon_theme_1' src='./src/assets/add-article-2.png' />
 			<h4 className='button2-like button2-like_theme_1'>
 				add article
 			</h4>

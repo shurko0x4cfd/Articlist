@@ -9,7 +9,7 @@ export default List = function(props/*: any */)/*: HTMLElement */ {
     return props.articlesGet.articles.items;
   };
   return <div className='list list_theme_1'>
-		<div className='list__body_theme_1'>
+		<div className='list__body list__body_theme_1'>
 			{items().map(function(itm/*: any */)/*: Array<HTMLElement> */ {
     return <props.Article text={itm.article} title={itm.title} author={itm.author} dateTime={itm.published_at} categories={props.categories()} categoryTitle={(itm.category || {}).title || 'none'} />;
   })}

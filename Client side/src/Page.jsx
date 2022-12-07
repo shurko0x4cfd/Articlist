@@ -5,7 +5,7 @@ import { createStore } from "solid-js/store";
 import './shared.less';
 import './assets/funnel.svg';
 import './assets/add-article.png';
-import { fetchUrl, storeUrl, ajax, loremIpsum } from "./tools";
+import { fetchUrl, storeUrl, ajax, scrollUp, loremIpsum } from "./tools";
 import { ONLY, noop, cl } from 'raffinade';
 
 import Header from './components/Header/header.jsx';
@@ -17,6 +17,7 @@ import PaginationButtonForward
 	from './components/PaginationButtonForward/pagination-button-forward.jsx';
 import PageNumber from './components/PageNumber/page-number.jsx';
 import List from './components/List/list.jsx';
+import Article from './components/Article/article.jsx';
 
 
 const state =
@@ -86,11 +87,11 @@ function Page(props /*: any */) /*: HTMLElement */ {
 	 *  Копируем настоящие настройки фильтрации в ещё не применённые,
 	 *  отображаемые на панели настроек
 	 */
-	const editCategoryMgr /*: oSign */ = signalObject(selectedCategories());
+	const editCategory /*: oSign */ = signalObject(selectedCategories());
 
 	// Какие категории добавить в новую статью из тех, что есть
 	// По умолчанию никакие
-	const addCategoryMgr /*: oSign */ = signalObject({
+	const addCategory /*: oSign */ = signalObject({
 		'1': { label: 'Category 1', checked: false },
 		'2': { label: 'Category 2', checked: false },
 	});
@@ -98,7 +99,7 @@ function Page(props /*: any */) /*: HTMLElement */ {
 	const isList /*: Function */ = (u /*: void */) /*: boolean  */ => modeGet() === 'list';
 
 	const categories /*: Function */ = (u /*: void */) /*: oSign  */ =>
-		isList() ? editCategoryMgr : addCategoryMgr;
+		isList() ? editCategory : addCategory;
 
 	/** Этот вариант допускает множественный выбор категорий */
 	/* 
@@ -137,7 +138,7 @@ function Page(props /*: any */) /*: HTMLElement */ {
 	 * а не восстанавливаем их
 	 */
 	const resetCategoriesEdition = () => {
-		editCategoryMgr.set(selectedCategories());
+		editCategory.set(selectedCategories());
 		currentSelectCategoriesSide.set('folded');
 	}
 
@@ -146,17 +147,17 @@ function Page(props /*: any */) /*: HTMLElement */ {
 	 * а не обнуляем их
 	 */
 	const restoreCategoriesEdition = () => {
-		editCategoryMgr.set(selectedCategories());
+		editCategory.set(selectedCategories());
 		currentSelectCategoriesSide.set('folded');
 	}
 
 	const cancelCategoriesEdition = () => {
-		editCategoryMgr.set(selectedCategories());
+		editCategory.set(selectedCategories());
 		currentSelectCategoriesSide.set('folded');
 	}
 
 	const applyCategoriesInEdition = () => {
-		hasCategoryMgr.set(editCategoryMgr.get());
+		hasCategoryMgr.set(editCategory.get());
 		currentSelectCategoriesSide.set('folded');
 		loadArticles(undefined, '&category=' + currentCategoryGet());
 	}
@@ -319,7 +320,7 @@ function MenuSend(props /*: any */) {
 function EditableCredits(props /*: any */) {
 	return (
 		<div className='credits-container'>
-			<header className='credits credits__theme_1'>
+			<header className='credits credits_theme_1'>
 				<input placeholder={props.title}
 					className='credits__title credits__editable-title 
 						credits__editable-title_theme_1' />
@@ -338,98 +339,6 @@ function EditableCredits(props /*: any */) {
 				</div>
 			</header>
 		</div>);
-}
-
-
-function Article(props /*: any */) {
-	return (
-		<div className='article-container'>
-			<article className='article article_theme_1 
-				article_corner_rounded_3'>
-
-				<Credits title={props.title} author={props.author}
-					dateTime={props.dateTime} />
-
-				<div className='article-element article-element_theme_1'>
-					{props.text}
-				</div>
-
-				<Categories categoryTitle={props.categoryTitle} />
-			</article>
-		</div>);
-}
-
-
-function Credits(props /*: any */) {
-	return (
-		<div className='credits-container'>
-			<header className='credits__theme_1'>
-				<h1 className='credits__title credits__title_theme_1'>
-					{props.title}
-				</h1>
-				<div className='credits__info credits__info_theme_1'>
-					<div className='credits__author credits__author_theme_1'>
-						<div className='credits__author-header 
-						credits__author-header_theme_1'>
-
-							<h4>Author:</h4>
-						</div>
-						<div>{props.author}</div>
-					</div>
-					<div className='credits__published-at 
-					credits__published-at_theme_1'>
-
-						<div className='credits__published-at-header 
-						credits__published-at-header_theme_1'>
-
-							<h4>Published At:</h4>
-						</div>
-						<div>{props.dateTime}</div>
-					</div>
-				</div>
-			</header>
-		</div>);
-}
-
-
-function Categories(props /*: any */) {
-	return (
-		<div className='categories-container'>
-			<fiiter className='categories categories_theme_1'>
-				<div className='categories__header categories__header_theme_1'>
-					<h4>Categories:</h4>
-				</div>
-				<CategoriesList categoryTitle={props.categoryTitle} />
-			</fiiter>
-		</div>);
-}
-
-
-function CategoriesList(props /*: any */) {
-	const categoryTitle = props.categoryTitle || <Tag category={{ label: 'none' }} />;
-
-	return (
-		<div className='categories-list'>
-			<div className='categories-list__body 
-				categories-list__body_theme_1'>
-
-				<Tag label={categoryTitle} />
-			</div>
-		</div>);
-}
-
-
-function Tag(props /*: any */) {
-	return (
-		<div className='tag'>
-			<div className='tag__text tag__text_theme_1'>
-				<Show when={props.label !== 'none'} fallback={() => 'none'}>
-					{'#' + props.label}
-				</Show>
-			</div>
-
-		</div>);
-
 }
 
 
@@ -551,11 +460,6 @@ function signalObject(arg /*: any  */) /*: oSign */ {
 }
 
 
-const scrollUp = () =>
-	setTimeout(() =>
-		document.getElementsByTagName('html')[ONLY].scroll(0, 0));
-
-
 function _storeArticle(title /*: string */ = 'No title',
 	category_id /*: string */ = '0',
 	category_title /*: string */,
@@ -578,9 +482,6 @@ function _storeArticle(title /*: string */ = 'No title',
 }
 
 
-
-
-
 /** Пробуем сгенерировать статьи  */
 function initTable() {
 	for (let i = 1; i < 45; i++)
@@ -592,7 +493,6 @@ function initTable() {
 // Переместить генерацию статей на бэк
 // Переместить на бэк список тегов фильтрации
 // Кэшировать загруженные статьи
-// Реанимировать кнопки вперёд/назад
 // Пофиксить фильтрацию
 // Пофиксить имена классов css
 // Убрать секунды из даты

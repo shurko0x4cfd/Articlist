@@ -8,7 +8,7 @@ export default List ###: Function ### = (props ###: any ###) ###: HTMLElement ##
 		props.articlesGet.articles.items;
 
 	<div className='list list_theme_1'>
-		<div className='list__body_theme_1'>
+		<div className='list__body list__body_theme_1'>
 			{
 				items().map (itm ###: any ###) ###: Array<HTMLElement> ### ->
 					<props.Article text={itm.article}
