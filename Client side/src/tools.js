@@ -1,12 +1,8 @@
   /* @flow */
-  /**
-  * Block comment
-   */
-var ajax/*: Function */, fetchUrl/*: string */, homeUrl/*: string */, loremIpsum/*: string */, mapp/*: Function  */, scroll/*: function  */, scrollUp/*: Function */, storeUrl/*: string */,
+var ajax/*: Function */, fetchUrl/*: string */, homeUrl/*: string */, loremIpsum/*: string */, mapp/*: Function  */, scroll/*: Function  */, scrollUp/*: Function */, storeUrl/*: string */,
   splice = [].splice;
 
 import {
-  /* Shortcut for console.log  */
   noop,
   cl,
   u,
@@ -43,12 +39,12 @@ ajax = function(onSucceess/*: Function */ = noop, url/*: string */ = fetchUrl, m
   return u;
 };
 
-mapp = function(obj/*: function  */, method/*: string  */, ...args/*: Array<any> */)/*: mixed  */ {
+mapp = function(obj/*: any */, method/*: string  */, ...args/*: Array<any> */)/*: mixed  */ {
   return obj[method](...args);
 };
 
 // Due to tech troubles still cant keep block comments in produced code
-// therefore use `` for annotations, but it require some postprocessing
+// therefore used `` for annotations, but this require some postprocessing
 // ^\s*\*/;\s*$\n -> */\n;
 
 /**
@@ -56,8 +52,8 @@ mapp = function(obj/*: function  */, method/*: string  */, ...args/*: Array<any>
  * @return {mixed}
  */;
 
-scroll = function(...args)/*: mixed  */ {
-  var obj, ref;
+scroll = function(...args/*: Array<mixed> */)/*: mixed */ {
+  var obj/*: any */, ref;
   ref = args, [...args] = ref, [obj] = splice.call(args, -1);
   return mapp(obj, 'scroll', ...args);
 };
@@ -69,7 +65,7 @@ scroll = function(...args)/*: mixed  */ {
  */;
 
 scrollUp = function(tagname/*: string */ = 'html')/*: number */ {
-  return setTimeout(function() {
+  return setTimeout(function(v/*: void */)/*: mixed */ {
     return scroll(0, 0, first(document.getElementsByTagName(tagname)));
   });
 };

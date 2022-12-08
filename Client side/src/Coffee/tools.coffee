@@ -1,9 +1,9 @@
 ### @flow ###
-### Shortcut for console.log  ###
 
-import { noop, cl, u, first,  } from 'raffinade'
+import { noop, cl, u, first } from 'raffinade'
 
-homeUrl ###: string ### = 'http://localhost:4000/web/index.php?r=article/'
+
+homeUrl  ###: string ### = 'http://localhost:4000/web/index.php?r=article/'
 fetchUrl ###: string ### = 'loadart'
 storeUrl ###: string ### = 'storeart'
 
@@ -15,39 +15,38 @@ ajax ###: Function ### = (
 	data       ###: any ###      = {},
 	onFail     ###: Function ### = (xhr ###: any ###) -> cl xhr) ###: void ### ->
 
-	data = JSON.stringify(data) if typeof data != 'string'
+	data = JSON.stringify data if typeof data != 'string'
 
 	url ###: string ### = homeUrl + url
-	xhr = new XMLHttpRequest()
-	xhr.open(method, url, true)
+	xhr = new XMLHttpRequest
+	xhr.open method, url, true
 	xhr.onreadystatechange =
 		(v ###: void ###) ###: void ### ->
 			return if xhr.readyState != 4
 
 			if xhr.status != 200
-				onFail(xhr)
+				onFail xhr 
 			else
-				onSucceess(xhr)
-	xhr.send(data)
+				onSucceess xhr
+	xhr.send data
 	u
 
-###*
-* Block comment
-###
-mapp ###: Function  ### = (obj ###: function  ###,
+
+mapp ###: Function  ### = (obj ###: any ###,
 	method ###: string  ###, ...args ###: Array<any> ###) ###: mixed  ### ->
 	obj[method] ...args
 
 
 # Due to tech troubles still cant keep block comments in produced code
-# therefore use `` for annotations, but it require some postprocessing
+# therefore used `` for annotations, but this require some postprocessing
 `// ^\s*\*/;\s*$\n -> */\n`
 
 `/**
  * 
  * @return {mixed}
  */`
-scroll ###: function  ### = (...args, obj) ###: mixed  ### ->
+scroll ###: Function  ### = (...args ###: Array<mixed> ###,
+		obj ###: any ###) ###: mixed ### ->
 	mapp obj, 'scroll', ...args
 
 
@@ -57,7 +56,8 @@ scroll ###: function  ### = (...args, obj) ###: mixed  ### ->
  * @return {number}
  */`
 scrollUp ###: Function ### = (tagname ###: string ### = 'html') ###: number ### ->
-	setTimeout () -> scroll 0, 0, first document.getElementsByTagName tagname
+	setTimeout (v ###: void ###) ###: mixed ### ->
+		scroll 0, 0, first document.getElementsByTagName tagname
 
 
 loremIpsum ###: string ### =

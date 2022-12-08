@@ -2,9 +2,11 @@
 
 import { createSignal } from "solid-js";
 import { createStore } from "solid-js/store";
+
 import './shared.less';
 import './assets/funnel.svg';
 import './assets/add-article.png';
+
 import { fetchUrl, storeUrl, ajax, scrollUp, loremIpsum } from "./tools";
 import { ONLY, noop, cl } from 'raffinade';
 
@@ -18,6 +20,9 @@ import PaginationButtonForward
 import PageNumber from './components/PageNumber/page-number.jsx';
 import List from './components/List/list.jsx';
 import Article from './components/Article/article.jsx';
+import CategoryItem from './components/CategoryItem/category-item.jsx';
+import MenuFilter from './components/MenuFilter/menu-filter.jsx';
+import EditableCredits from './components/EditableCredits/editable-credits.jsx';
 
 
 const state =
@@ -317,31 +322,6 @@ function MenuSend(props /*: any */) {
 }
 
 
-function EditableCredits(props /*: any */) {
-	return (
-		<div className='credits-container'>
-			<header className='credits credits_theme_1'>
-				<input placeholder={props.title}
-					className='credits__title credits__editable-title 
-						credits__editable-title_theme_1' />
-				<div className='credits__info credits__info_theme_1'>
-					<div className='credits__author credits__author_theme_1'>
-
-						<div className='credits__author-header 
-							credits__author-header_theme_1'>
-
-							<h4>Author:</h4>
-						</div>
-						<input className='credits__editable-author-name 
-							credits__editable-author-name_theme_1'
-							placeholder={props.author} />
-					</div>
-				</div>
-			</header>
-		</div>);
-}
-
-
 function SelectCategoriesSide(props /*: any */) {
 
 	const categoryItems = () => {
@@ -370,76 +350,6 @@ function SelectCategoriesSide(props /*: any */) {
 }
 
 
-function MenuFilter(props /*: any */) {
-	const { cancel, apply } = props;
-	return (
-		<menu className='menu-filter menu-filter_theme_1'>
-			<a className='menu-filter__button_theme_1 
-				menu-filter__button_cancel_theme_1'
-				role='button'
-				tabindex='0'
-				onClick={cancel}
-				onKeyDown={cancel}>
-
-				Cancel
-			</a>
-			<a className='menu-filter__button_theme_1  
-				menu-filter__button_theme_1 
-				menu-filter__button-apply_theme_1'
-				role='button'
-				tabindex='0'
-				onClick={apply}
-				onKeyDown={apply}>
-
-				Apply
-			</a>
-		</menu>
-	);
-}
-// В css [role="button"]:focus {outline: none;}
-
-
-function CategoryItem(props /*: any */) {
-	/*
-		// Вариант хороший, но не точно соответствует заданию - допускает
-		// множественный выбор категорий
-
-		const checkBoxClickHandler = evt => {
-			const chbox = evt.target;
-			const items = chbox.parentNode.parentNode;
-			const itemNodes = items.querySelectorAll('.category-item__chbox')
-			const itemsArray = Array.from(itemNodes);
-	
-			const newSet = itemsArray.reduce((newSet, itm) =>
-				(newSet[itm.id] = { checked: itm.checked }, newSet), {});
-	
-			props.upd(newSet);
-		}
-	 */
-
-	/** Этот вариант не допускает множественный выбор категорий */
-	const checkBoxClickHandlerLight =
-		({ target } /*: {target: {id: string}} */) => {
-			const id = target.id;
-			props.upd(id);
-
-			props.mode() === 'list' &&
-				props.currentCategorySet(id);
-		}
-
-	return (
-		<li className='category-item'>
-			<input className='category-item__chbox'
-				type='checkbox' id={props.id}
-				checked={props.checked}
-				onClick={checkBoxClickHandlerLight} />
-
-			<label className='category-item__label' for={props.id}>
-				{props.label}</label>
-		</li>);
-}
-
-
 // const signalObject =
 // 	(arg, [get, set] = createSignal(arg)) =>
 // 		Object.freeze({ get, set });
@@ -453,7 +363,7 @@ type oSign = {
 */
 
 
-function signalObject(arg /*: any  */) /*: oSign */ {
+function signalObject(arg /*: mixed  */) /*: oSign */ {
 	const [get, set] = createSignal(arg);
 	const oSign /*: oSign */ = Object.freeze({ get, set });
 	return oSign;
@@ -489,12 +399,13 @@ function initTable() {
 }
 
 
-// TODO: Обновлять последнюю страницу, после отправки
+// TODO:
+// Обновлять последнюю страницу, после отправки
 // Переместить генерацию статей на бэк
 // Переместить на бэк список тегов фильтрации
 // Кэшировать загруженные статьи
 // Пофиксить фильтрацию
-// Пофиксить имена классов css
+// Пофиксить css
 // Убрать секунды из даты
 // Не обновилось после отправки
 
