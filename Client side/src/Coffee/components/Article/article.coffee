@@ -2,7 +2,7 @@
 
 import Credits from '../Credits/credits.jsx'
 import Categories from '../Categories/categories.jsx'
-import './articles_theme_1.less'
+import './article_theme_1.less'
 
 
 export default Article ###: Function ### = \

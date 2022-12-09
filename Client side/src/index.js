@@ -6,7 +6,7 @@ import {
   render
 } from 'solid-js/web';
 
-import Page from './components/Page/page.jsx';
+import Page from './Page';
 
 import {
   ajax
