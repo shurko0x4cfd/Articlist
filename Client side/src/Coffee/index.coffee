@@ -1,9 +1,10 @@
 ### @flow  ###
 ### @refresh reload ###
-import { render } from 'solid-js/web';
-import Page from './Page';
-import { ajax } from "./tools";
-import { first, u } from 'raffinade';
+
+import { render } from 'solid-js/web'
+import Page from './components/Page/page.jsx'
+import { ajax } from "./tools"
+import { first, u } from 'raffinade'
 
 
 start ###: Function ### =

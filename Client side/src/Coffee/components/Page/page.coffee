@@ -1,27 +1,27 @@
 ### @flow ###
 
 
-import { createSignal } from "solid-js";
-import { createStore } from "solid-js/store";
+import { createSignal } from "solid-js"
+import { createStore } from "solid-js/store"
 
-import '../../shared.less';
-import '../../assets/funnel.svg';
-import '../../assets/add-article.png';
+import '../../shared.less'
+import '../../assets/funnel.svg'
+import '../../assets/add-article.png'
 
-import { fetchUrl, storeUrl, ajax, scrollUp, loremIpsum } from "../../tools";
-import { ONLY, noop, cl } from 'raffinade';
+import { fetchUrl, storeUrl, ajax, scrollUp, loremIpsum } from "../../tools"
+import { u, noop, cl } from 'raffinade'
 
-import Header from '../Header/header.jsx';
-import Footer from '../Footer/footer.jsx';
-import PaginationBar from '../PaginationBar/pagination-bar.jsx';
-import PaginationButtonBack from '../PaginationButtonBack/pagination-button-back.jsx';
-import PaginationButtonForward from '../PaginationButtonForward/pagination-button-forward.jsx';
-import PageNumber from '../PageNumber/page-number.jsx';
-import List from '../List/list.jsx';
-import Article from '../Article/article.jsx';
-import SelectCategoriesSide from '../SelectCategoriesSide/select-categories-side.jsx';
-import NewArticle from '../NewArticle/new-article.jsx';
-        
+import Header from '../Header/header.jsx'
+import Footer from '../Footer/footer.jsx'
+import PaginationBar from '../PaginationBar/pagination-bar.jsx'
+import PaginationButtonBack from '../PaginationButtonBack/pagination-button-back.jsx'
+import PaginationButtonForward from '../PaginationButtonForward/pagination-button-forward.jsx'
+import PageNumber from '../PageNumber/page-number.jsx'
+import List from '../List/list.jsx'
+import Article from '../Article/article.jsx'
+import SelectCategoriesSide from '../SelectCategoriesSide/select-categories-side.jsx'
+import NewArticle from '../NewArticle/new-article.jsx'
+
 
 state =
 	storedTitle: 'Enter new article title here'
@@ -46,7 +46,7 @@ export default Page ###: Function ### = \
 	loadArticles = (pageNum ###: string ### = '',
 		category ###: string ### = '') ->
 
-		ajax ((xhr) -> articlesSet('articles', () -> JSON.parse xhr.responseText)), fetchUrl + pageNum + category
+		ajax ((xhr) -> articlesSet('articles', -> JSON.parse xhr.responseText)), fetchUrl + pageNum + category
 
 		
 	`/**
@@ -54,8 +54,8 @@ export default Page ###: Function ### = \
 	  * Нужно перенести это на бэк
 	  */`
 	if !articles._meta.pageCount || !articles.items.length
-		initTable()
-		loadArticles()
+		initTable u
+		loadArticles u
 	
 	[currentCategoryGet, currentCategorySet] = createSignal 0
 	[modeGet, modeSet] = createSignal 'list'
@@ -74,20 +74,20 @@ export default Page ###: Function ### = \
 	
 	# Нужно заменить на store ?
 	`/** Копирует настройки фильтрации */`
-	selectedCategories = () ->
-		has = hasCategoryMgr.get();
+	selectedCategories = ->
+		has = hasCategoryMgr.get u
 		ids = Object.keys has
 		copy ###: {[string]: string} ### = { id: '' }
 
 		for id in ids
-			copy[id] = { ...(has[id] || {}) };
+			copy[id] = { ...(has[id] || {}) }
 		copy
 
 	`/**
 	  *  Копируем настоящие настройки фильтрации в ещё не применённые,
 	  *  отображаемые на панели настроек
 	  */`
-	editCategory ###: oSign ### = signalObject selectedCategories()
+	editCategory ###: oSign ### = signalObject selectedCategories u
 
 	# Какие категории добавить в новую статью из тех, что есть
 	# По умолчанию никакие
@@ -96,39 +96,40 @@ export default Page ###: Function ### = \
 		'2': { label: 'Category 2', checked: false }
 
 
-	isList ###: Function ### = (v ###: void ###) ###: boolean  ### -> modeGet() == 'list';
+	isList ###: Function ### = (v ###: void ###) ###: boolean  ### ->
+		modeGet() == 'list'
 
 	categories ###: Function ### = (v ###: void ###) ###: oSign  ### ->
-		if isList() then editCategory else addCategory;
+		if isList u then editCategory else addCategory
 
 
 	`/** Этот вариант допускает множественный выбор категорий */`
 	# const updateCategories = (categories, newCategories) => {
-	# 		const update = categories.get();
-	# 		const newCategoriyIds = Object.keys(newCategories);
+	# 		const update = categories.get()
+	# 		const newCategoriyIds = Object.keys(newCategories)
 
 	# 		for (const id of newCategoriyIds)
 	# 				if (update[id])
-	# 						update[id].checked = newCategories[id].checked || false;
+	# 						update[id].checked = newCategories[id].checked || false
 
-	# 		categories.set(update);
-	# };
+	# 		categories.set(update)
+	# }
 
 
 	`/** Этот вариант не допускает множественный выбор категорий */`
 	updateCategoriesLight = (categories ###: Object ###, idNew ###: string ###) ->
-		source = categories.get()
+		source = categories.get u
 		ids = Object.keys source
 		dest ###: {[string]: any} ### = {}
 
 		for id in ids
-			dest[id] = {};
-			dest[id].label = source[id].label;
+			dest[id] = {}
+			dest[id].label = source[id].label
 
-			if (id != idNew)
-					dest[id].checked = false;
+			if id != idNew
+				dest[id].checked = false
 			else
-					dest[id].checked = true;
+				dest[id].checked = true
 		categories.set dest
 
 
@@ -136,27 +137,27 @@ export default Page ###: Function ### = \
 	  * В этом варианте ресета обнуляем настройки,
 	  * а не восстанавливаем их
 	  */`
-	resetCategoriesEdition = () ->
-			editCategory.set selectedCategories()
-			currentSelectCategoriesSide.set 'folded'
+	resetCategoriesEdition = ->
+		editCategory.set selectedCategories u
+		currentSelectCategoriesSide.set 'folded'
 
 
 	`/**
 	  * В этом варианте ресета восстанавливаем настройки,
 	  * а не обнуляем их
 	  */`
-	restoreCategoriesEdition = () ->
-			editCategory.set selectedCategories()
-			currentSelectCategoriesSide.set 'folded'
+	restoreCategoriesEdition = ->
+		editCategory.set selectedCategories u
+		currentSelectCategoriesSide.set 'folded'
 
 
-	cancelCategoriesEdition = () ->
-			editCategory.set selectedCategories()
-			currentSelectCategoriesSide.set 'folded'
+	cancelCategoriesEdition = ->
+		editCategory.set selectedCategories u
+		currentSelectCategoriesSide.set 'folded'
 
 	
-	applyCategoriesInEdition = () ->
-			hasCategoryMgr.set editCategory.get()
+	applyCategoriesInEdition = ->
+			hasCategoryMgr.set editCategory.get u
 			currentSelectCategoriesSide.set 'folded'
 			loadArticles undefined, '&category=' + currentCategoryGet()
 
@@ -172,7 +173,7 @@ export default Page ###: Function ### = \
 
 	pageNumBtnClickHandler = (evt ###: any ###) ->
 		pageNum = evt.target.innerText || '1'
-		loadArticles '&page=' + pageNum, '&category=' + currentCategoryGet()
+		loadArticles '&page=' + pageNum, '&category=' + currentCategoryGet u
 
 	
 	<div className='page'>
@@ -226,7 +227,7 @@ export default Page ###: Function ### = \
 	
 # const signalObject =
 #	(arg, [get, set] = createSignal(arg)) =>
-#	Object.freeze({ get, set });
+#	Object.freeze({ get, set })
 	
 
 `/*::
@@ -258,12 +259,12 @@ _storeArticle = (
 			text
 		}
 
-	ajax (-> console.log 'Successfully sent'), storeUrl, 'POST', postData
+	ajax (-> cl 'Successfully sent'), storeUrl, 'POST', postData
 
 
 `/** Пробуем сгенерировать статьи  */`
-initTable = () ->
-	for i in [1...45]
+initTable = ->
+	for i in [1...25]
 		_storeArticle 'Title ' + i, '0', 'none', 'Author ' + i, loremIpsum
 
 

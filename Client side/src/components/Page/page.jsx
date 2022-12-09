@@ -24,7 +24,7 @@ import {
 } from "../../tools";
 
 import {
-  ONLY,
+  u,
   noop,
   cl
 } from 'raffinade';
@@ -80,8 +80,8 @@ export default Page = function(props/*: any */)/*: HTMLElement */ {
 	  * Нужно перенести это на бэк
 	  */;
   if (!articles._meta.pageCount || !articles.items.length) {
-    initTable();
-    loadArticles();
+    initTable(u);
+    loadArticles(u);
   }
   [currentCategoryGet, currentCategorySet] = createSignal(0);
   [modeGet, modeSet] = createSignal('list');
@@ -110,7 +110,7 @@ export default Page = function(props/*: any */)/*: HTMLElement */ {
   /** Копирует настройки фильтрации */;
   selectedCategories = function() {
     var copy/*: {[string]: string} */, has, id, ids, j, len;
-    has = hasCategoryMgr.get();
+    has = hasCategoryMgr.get(u);
     ids = Object.keys(has);
     copy = {
       id: ''
@@ -125,7 +125,7 @@ export default Page = function(props/*: any */)/*: HTMLElement */ {
 	  *  Копируем настоящие настройки фильтрации в ещё не применённые,
 	  *  отображаемые на панели настроек
 	  */;
-  editCategory = signalObject(selectedCategories());
+  editCategory = signalObject(selectedCategories(u));
   // Какие категории добавить в новую статью из тех, что есть
   // По умолчанию никакие
   addCategory/*: oSign */ = signalObject({
@@ -142,7 +142,7 @@ export default Page = function(props/*: any */)/*: HTMLElement */ {
     return modeGet() === 'list';
   };
   categories = function(v/*: void */)/*: oSign  */ {
-    if (isList()) {
+    if (isList(u)) {
       return editCategory;
     } else {
       return addCategory;
@@ -150,19 +150,19 @@ export default Page = function(props/*: any */)/*: HTMLElement */ {
   };
   /** Этот вариант допускает множественный выбор категорий */;
   // const updateCategories = (categories, newCategories) => {
-  // 		const update = categories.get();
-  // 		const newCategoriyIds = Object.keys(newCategories);
+  // 		const update = categories.get()
+  // 		const newCategoriyIds = Object.keys(newCategories)
 
   // 		for (const id of newCategoriyIds)
   // 				if (update[id])
-  // 						update[id].checked = newCategories[id].checked || false;
+  // 						update[id].checked = newCategories[id].checked || false
 
-  // 		categories.set(update);
-  // };
+  // 		categories.set(update)
+  // }
   /** Этот вариант не допускает множественный выбор категорий */;
   updateCategoriesLight = function(categories/*: Object */, idNew/*: string */) {
     var dest/*: {[string]: any} */, id, ids, j, len, source;
-    source = categories.get();
+    source = categories.get(u);
     ids = Object.keys(source);
     dest = {};
     for (j = 0, len = ids.length; j < len; j++) {
@@ -182,7 +182,7 @@ export default Page = function(props/*: any */)/*: HTMLElement */ {
 	  * а не восстанавливаем их
 	  */;
   resetCategoriesEdition = function() {
-    editCategory.set(selectedCategories());
+    editCategory.set(selectedCategories(u));
     return currentSelectCategoriesSide.set('folded');
   };
   /**
@@ -190,15 +190,15 @@ export default Page = function(props/*: any */)/*: HTMLElement */ {
 	  * а не обнуляем их
 	  */;
   restoreCategoriesEdition = function() {
-    editCategory.set(selectedCategories());
+    editCategory.set(selectedCategories(u));
     return currentSelectCategoriesSide.set('folded');
   };
   cancelCategoriesEdition = function() {
-    editCategory.set(selectedCategories());
+    editCategory.set(selectedCategories(u));
     return currentSelectCategoriesSide.set('folded');
   };
   applyCategoriesInEdition = function() {
-    hasCategoryMgr.set(editCategory.get());
+    hasCategoryMgr.set(editCategory.get(u));
     currentSelectCategoriesSide.set('folded');
     return loadArticles(void 0, '&category=' + currentCategoryGet());
   };
@@ -208,7 +208,7 @@ export default Page = function(props/*: any */)/*: HTMLElement */ {
   pageNumBtnClickHandler = function(evt/*: any */) {
     var pageNum;
     pageNum = evt.target.innerText || '1';
-    return loadArticles('&page=' + pageNum, '&category=' + currentCategoryGet());
+    return loadArticles('&page=' + pageNum, '&category=' + currentCategoryGet(u));
   };
   return <div className='page'>
 		<Header />
@@ -241,7 +241,7 @@ type oSign =
 
 // const signalObject =
 //	(arg, [get, set] = createSignal(arg)) =>
-//	Object.freeze({ get, set });
+//	Object.freeze({ get, set })
 */;
 
 signalObject = function(arg/*: mixed */)/*: oSign */ {
@@ -262,7 +262,7 @@ _storeArticle = function(title/*: string */ = 'No title', category_id/*: string 
     text
   };
   return ajax((function() {
-    return console.log('Successfully sent');
+    return cl('Successfully sent');
   }), storeUrl, 'POST', postData);
 };
 
@@ -271,7 +271,7 @@ _storeArticle = function(title/*: string */ = 'No title', category_id/*: string 
 initTable = function() {
   var i, j, results;
   results = [];
-  for (i = j = 1; j < 45; i = ++j) {
+  for (i = j = 1; j < 25; i = ++j) {
     results.push(_storeArticle('Title ' + i, '0', 'none', 'Author ' + i, loremIpsum));
   }
   return results;
