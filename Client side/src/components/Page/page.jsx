@@ -1,5 +1,5 @@
 /* @flow */
-var Page/*: Function */, _storeArticle, initTable, signalObject, state, stateGet;
+var Page/*: Function */, _storeArticle, generationArtLim, initTable, signalObject, state, stateGet;
 
 import {
   createSignal
@@ -10,6 +10,8 @@ import {
 } from "solid-js/store";
 
 import '../../shared.less';
+
+import './page.less';
 
 import '../../assets/funnel.svg';
 
@@ -49,6 +51,9 @@ import SelectCategoriesSide from '../SelectCategoriesSide/select-categories-side
 
 import NewArticle from '../NewArticle/new-article.jsx';
 
+// Config
+generationArtLim = 25;
+
 state = {
   storedTitle: 'Enter new article title here',
   storedAuthorname: 'Enter your name here',
@@ -86,7 +91,7 @@ export default Page = function(props/*: any */)/*: HTMLElement */ {
   [currentCategoryGet, currentCategorySet] = createSignal(0);
   [modeGet, modeSet] = createSignal('list');
   currentSelectCategoriesSide = signalObject('folded');
-  drawSelectCategoriesSide = () => {
+  drawSelectCategoriesSide = function() {
     return modeGet() === 'edit' || currentSelectCategoriesSide.get() !== 'folded';
   };
   // Текущие настройки фильтрации
@@ -269,9 +274,9 @@ _storeArticle = function(title/*: string */ = 'No title', category_id/*: string 
 /** Пробуем сгенерировать статьи  */;
 
 initTable = function() {
-  var i, j, results;
+  var i, j, ref, results;
   results = [];
-  for (i = j = 1; j < 25; i = ++j) {
+  for (i = j = 1, ref = generationArtLim; (1 <= ref ? j < ref : j > ref); i = 1 <= ref ? ++j : --j) {
     results.push(_storeArticle('Title ' + i, '0', 'none', 'Author ' + i, loremIpsum));
   }
   return results;

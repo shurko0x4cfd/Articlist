@@ -31,13 +31,17 @@ code {
 	outline-style: none;
 }
 
-.row {
+.flex {
 	display: flex;
+}
+
+.row {
+	.flex;
 	flex-direction: row;
 }
 
 .col {
-	display: flex;
+	.flex;
 	flex-direction: column;
 }
 
@@ -45,120 +49,12 @@ code {
 	font-weight: bold;
 }
 
-div:hover {
-	cursor: default;
-}
-
-.page {
-	.col;
-	width: 100%;
-}
-
-// .menu-filter_theme_1 {
-// 	display: flex;
-// 	flex-direction: row;
-// 	justify-content: right;
-// }
-
-// .menu-filter__button_theme_1 {
-// 	display: flex;
-// 	padding: 0px 0px 0px 8px;
-// 	font-weight: bold;
-// 	color: darkblue;
-// }
-
-// .menu-filter__button-apply_theme_1 {
-// 	color: darkgreen;
-// }
-
-// .menu-filter__button-apply_theme_1:hover {
-// 	color: green;
-// }
-
-// .menu-filter__button_cancel_theme_1 {
-// 	color: darkred;
-// }
-
-// .menu-filter__button_cancel_theme_1:hover {
-// 	color: red;
-// }
-
-.credits_theme_1 {
-	.col;
-	padding: 32px 64px;
-}
-
-.credits__title_theme_1 {
-	padding-bottom: 12px;
-	border-style: solid;
-	border-width: 0px 0px 2px 0px;
-	border-color: #555555;
-	color: #222222;
-}
-
-.credits__info_theme_1 {
-	display: flex;
-	flex-direction: row;
-
-	padding-top: 8px;
-}
-
-.credits__author_theme_1, .credits__published-at_theme_1 {
-	display: flex;
-	flex-direction: row;
-	padding-right: 8px;
-}
-
-.credits__author-header_theme_1, .credits__published-at-header_theme_1 {
-	padding-right: 8px;
-}
-
-.select-categories__button_theme_1 {
-	font-weight: bold;
-	color: darkblue;
-
-	padding-left: 8px;
-	padding-right: 8px;
-}
-
-.button-like_theme_1 {
-	.row;
-	.no-any-borders;
-    min-width: 24px;
-	min-height: 24px;
-	margin: 0px 1px;
-	padding: 0px;
-	justify-content: center;
-	align-items: stretch;
-	background-color: coral;
-	color: black;
-}
-
-.button-like_theme_1:hover {
-	background-color: green;
-	color: white;
-}
-
-.button2-like_theme_1:hover {
-	color: #000011;
-}
-
-.flex {
-	display: flex;
-}
-
-.flex-row {
-	display: flex;
-	flex-direction: row;
-}
-
 .hidden {
 	display: none;
 }
 
-.highlighted-button {
-	background-color: orangered;
-	color: #333333;
+div:hover {
+	cursor: default;
 }
 
 .red-border {

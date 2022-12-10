@@ -1,3 +1,4 @@
+/* @flow */
 var CategoryItem;
 
 import './category-item_theme_1.less';

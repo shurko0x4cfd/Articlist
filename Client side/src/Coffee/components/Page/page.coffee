@@ -5,6 +5,7 @@ import { createSignal } from "solid-js"
 import { createStore } from "solid-js/store"
 
 import '../../shared.less'
+import './page.less'
 import '../../assets/funnel.svg'
 import '../../assets/add-article.png'
 
@@ -21,6 +22,10 @@ import List from '../List/list.jsx'
 import Article from '../Article/article.jsx'
 import SelectCategoriesSide from '../SelectCategoriesSide/select-categories-side.jsx'
 import NewArticle from '../NewArticle/new-article.jsx'
+
+
+# Config
+generationArtLim = 25
 
 
 state =
@@ -61,7 +66,7 @@ export default Page ###: Function ### = \
 	[modeGet, modeSet] = createSignal 'list'
 	currentSelectCategoriesSide ###: oSign ### = signalObject 'folded'
 
-	drawSelectCategoriesSide = () => modeGet() == 'edit' ||
+	drawSelectCategoriesSide = -> modeGet() == 'edit' ||
 		currentSelectCategoriesSide.get() != 'folded'
 
 	# Текущие настройки фильтрации
@@ -264,7 +269,7 @@ _storeArticle = (
 
 `/** Пробуем сгенерировать статьи  */`
 initTable = ->
-	for i in [1...25]
+	for i in [1...generationArtLim]
 		_storeArticle 'Title ' + i, '0', 'none', 'Author ' + i, loremIpsum
 
 
@@ -277,3 +282,4 @@ initTable = ->
 # Пофиксить css
 # Убрать секунды из даты
 # Не обновилось после отправки
+# После Apply подсветка кнопки-номера пагинации исчезает

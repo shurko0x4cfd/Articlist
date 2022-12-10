@@ -1,6 +1,6 @@
 var Credits;
 
-import '../../shared.less';
+import './credits_theme_1.less';
 
 export default Credits = function(props/*: any */)/*: HTMLElement */ {
   return <header className='credits credits_theme_1'>

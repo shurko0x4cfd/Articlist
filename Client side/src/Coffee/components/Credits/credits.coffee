@@ -1,4 +1,4 @@
-import '../../shared.less'
+import './credits_theme_1.less'
 
 
 export default Credits = (props ###: any ###) ###: HTMLElement ### ->
