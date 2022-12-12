@@ -9,7 +9,9 @@ import {
   createStore
 } from "solid-js/store";
 
-import '../../shared.less';
+import '../shared/styles/shared.less';
+
+import '../shared/mixin-blocks/placer.less';
 
 import './page.less';
 
@@ -117,13 +119,12 @@ export default Page = function(props/*: any */)/*: HTMLElement */ {
     var copy/*: {[string]: string} */, has, id, ids, j, len;
     has = hasCategoryMgr.get(u);
     ids = Object.keys(has);
-    copy = {
-      id: ''
-    };
+    copy = {};
     for (j = 0, len = ids.length; j < len; j++) {
       id = ids[j];
       copy[id] = {...(has[id] || {})};
     }
+    cl(copy);
     return copy;
   };
   /**
@@ -215,14 +216,14 @@ export default Page = function(props/*: any */)/*: HTMLElement */ {
     pageNum = evt.target.innerText || '1';
     return loadArticles('&page=' + pageNum, '&category=' + currentCategoryGet(u));
   };
-  return <div className='page'>
-		<Header />
+  return <div className='page placer sizer'>
+		<Header cNames=' placer__moveable_padding-left_32px sizer__sizeable_min-height_128px ' />
 		<Show when={isList()}>
 			<PaginationBar categoriesState={currentSelectCategoriesSide} {...{modeGet, modeSet, articlesGet, pageNumBtnClickHandler, PaginationButtonBack, PaginationButtonForward, PageNumber}} scrollUp={noop} />
 		</Show>
 
 		<Show when={drawSelectCategoriesSide()}>
-			<SelectCategoriesSide categories={categories()} mode={modeGet} draw={drawSelectCategoriesSide} upd={updateCategoriesLight.bind(null, categories())} cancel={cancelCategoriesEdition} reset={resetCategoriesEdition} apply={applyCategoriesInEdition} {...{currentCategorySet}} />
+			<SelectCategoriesSide categories={categories()} mode={modeGet} upd={updateCategoriesLight.bind(null, categories())} cancel={cancelCategoriesEdition} reset={resetCategoriesEdition} apply={applyCategoriesInEdition} {...{currentCategorySet}} />
 		</Show>
 
 		<Show when={isList()}>
@@ -240,9 +241,10 @@ export default Page = function(props/*: any */)/*: HTMLElement */ {
 };
 
 /*::
-type oSign =
-	get: Function
+type oSign = {
+	get: Function,
 	set: Function
+}
 
 // const signalObject =
 //	(arg, [get, set] = createSignal(arg)) =>
@@ -291,3 +293,4 @@ initTable = function() {
 // Пофиксить css
 // Убрать секунды из даты
 // Не обновилось после отправки
+// После Apply подсветка кнопки-номера пагинации исчезает

@@ -5,6 +5,4 @@ import './template.less'
 
 
 export default template ###: Function ### = \
-        (props ###: any ###) ###: HTMLElement ### -> u
-
-
+        (props ###: any ###) ###: HTMLElement ### -> <></>

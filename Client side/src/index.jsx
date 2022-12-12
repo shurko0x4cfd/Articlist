@@ -1,8 +1,9 @@
 /* @flow  */
 var start/*: Function */;
 
+import './components/shared/styles/reset.less';
+
 import {
-  /* @refresh reload */
   render
 } from 'solid-js/web';
 
@@ -24,7 +25,7 @@ start = function(xhr/*: any */)/*: void */ {
   articles._meta.currentPage = articles._meta.currentPage.toString(u);
   render(function(v/*: void */)/*: Function */ {
     return <Page {...{articles}} />;
-  }, first(document.getElementsByClassName('articlist-root-el')));
+  }, first(document.getElementsByClassName('articlist-437cc6d26ebe')));
   return u;
 };
 

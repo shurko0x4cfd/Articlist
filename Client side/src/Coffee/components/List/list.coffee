@@ -17,6 +17,7 @@ export default List ###: Function ### = (props ###: any ###) ###: HTMLElement ##
 						dateTime={itm.published_at}
 						categories={props.categories()}
 						categoryTitle={(itm.category || {}).title || 'none'}
+						cNames=' placer__moveable_margin_16px '
 					/>
 			}
 		</div>

@@ -20,11 +20,12 @@ export default CategoryItem = function(props/*: any */)/*: HTMLElement */ {
   		props.upd newSet
    */
   // Этот вариант не допускает множественный выбор категорий
-  checkBoxClickHandlerLight = function({target})/*: {target: {id: string}} */ {
+  checkBoxClickHandlerLight = function({target})/*: void *//*: {target: {id: string}} */ {
     var id;
     id = target.id;
     props.upd(id);
-    return props.mode() === 'list' && props.currentCategorySet(id);
+    props.mode() === 'list' && props.currentCategorySet(id);
+    return u;
   };
   return <li className='category-item'>
 		<input className='category-item__chbox' type='checkbox' id={props.id} checked={props.checked} onClick={checkBoxClickHandlerLight} />

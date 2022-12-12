@@ -1,26 +1,20 @@
-@import '../../shared.less';
+@import (reference) '../shared/styles/atomic.less';
+@import (reference) '../shared/styles/shared.less';
 
-
-.article-container {
-	padding: 16px;
-}
 
 .article_theme_1 {
-	display: flex;
-	flex-direction: column;
+	.col;
 
 	max-width: 800px;
 	min-height: 128px;
+
+	.br-3;
 
 	color: #222222;
 	background-color: #efefef;
 }
 
-.article-element_theme_1 {
-	padding: 0px 64px 0px 64px;
+.article__text_theme_1 {
+	.p-hz-64px;
 	text-align: justify;
-}
-
-.article_corner_rounded_3 {
-	border-radius: 3px;
 }

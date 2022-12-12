@@ -1,31 +1,18 @@
-@import '../../shared.less';
+@import (reference) '../shared/styles/shared.less';
 
 
 .header_theme_1 {
 	.row;
-}
-
-.header__body_theme_1 {
-	.row;
-	flex-grow: 1;
-
-	min-height: 128px;
 	background-color: rgb(40, 90, 90);
-}
-
-.header__logo-side_theme_1 {
-	.col;
-
-	justify-content: center;
-	color: aliceblue;
 }
 
 .header__logo_theme_1 {
 	.col;
 
-	padding: 16px 16px 16px 32px;
 	justify-content: center;
 	color: aliceblue;
+	.bg-transparent;
+	justify-content: center;
 	font-size: 32px;
 	font-weight: bold;
 	rotate: -45deg;
@@ -34,7 +21,6 @@
 .header__title_theme_1 {
 	.col;
 
-	padding-left: 64px;
 	justify-content: center;
 	font-size: 72px;
 	font-weight: bold;

@@ -1,16 +1,18 @@
-@import '../../shared.less';
+@import (reference) '../shared/styles/atomic.less';
+@import (reference) '../shared/styles/shared.less';
 
 
 .select-categories_theme_1 {
     .row;
-
 	padding-top: 32px;
 	padding-bottom: 16px;
 	justify-content: center;
+	.flex-wrap;
 	background-color: beige;
 }
 
 .select-categories__items_theme_1 {
     .row;
 	max-width: 800px;
+	.flex-wrap;
 }

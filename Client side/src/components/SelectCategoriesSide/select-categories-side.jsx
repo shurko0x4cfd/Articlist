@@ -8,25 +8,23 @@ import MenuFilter from '../MenuFilter/menu-filter.jsx';
 import './select-categories-side.less';
 
 export default SelectCategoriesSide = function(props/*: any */)/*: HTMLElement */ {
-  var categoryItems, currentCategorySet, mode, upd;
-  ({upd, currentCategorySet, mode} = props);
+  var apply, cancel, categoryItems, currentCategorySet, mode, reset, upd;
+  ({upd, currentCategorySet, mode, reset, cancel, apply} = props);
   categoryItems = function() {
     var entries/*: Array<[string, any]> */;
     entries = Object.entries(props.categories.get());
-    return entries.map(function(ent/*: Array<any> */) {
+    return entries.map(function(ent/*: Array<[string, mixed]> */) {
       var checked, label;
       ({label, checked} = ent[1]);
       return <CategoryItem id={ent[0]} {...{label, checked, upd, currentCategorySet, mode}} />;
     });
   };
-  return <Show when={props.draw()}>
-		<menu className={'select-categories select-categories_theme_1'}>
-			<menu className='select-categories__items_theme_1'>
-				{categoryItems()}
-			</menu>
-			<Show when={props.mode() === 'list'}>
-				<MenuFilter reset={props.reset} cancel={props.cancel} apply={props.apply} />
-			</Show>
+  return <menu className={'select-categories select-categories_theme_1'}>
+		<menu className='select-categories__items select-categories__items_theme_1'>
+			{categoryItems()}
 		</menu>
-	</Show>;
+		<Show when={props.mode() === 'list'}>
+			<MenuFilter {...{reset, cancel, apply}} />
+		</Show>
+	</menu>;
 };

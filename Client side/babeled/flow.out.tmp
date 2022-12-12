@@ -1,0 +1,317 @@
+
+
+Error ----------------------------------------------------------- babeled/components/CategoryItem/category-item.js:26:18
+
+Unexpected token `:`, expected the token `{`
+
+   26|   }) /*: void */ /*: {target: {id: string}} */{
+
+                        ^^^
+
+Error ----------------------------------------------------------------------------- babeled/components/Page/page.js:37:7
+
+Variable `addCategory` [1] is never initialized, annotated, or assigned to. [invalid-declaration]
+
+   37|   var addCategory, applyCategoriesInEdition, articles, articlesGet, articlesSet, cancelCategoriesEdition, categories /*: Function */, currentCategoryGet, currentCategorySet, currentSelectCategoriesSide /*: oSign */, drawSelectCategoriesSide, editCategory /*: oSign */, hasCategoryMgr, isList /*: Function */, loadArticles, modeGet, modeSet, pageNumBtnClickHandler, resetCategoriesEdition, restoreCategoriesEdition, selectedCategories, storeArticle, stub, updateCategoriesLight;
+
+             ^^^^^^^^^^^ [1]
+
+Error --------------------------------------------------------------------------- babeled/components/Page/page.js:37:270
+
+Variable `hasCategoryMgr` [1] is never initialized, annotated, or assigned to. [invalid-declaration]
+
+   37|   var addCategory, applyCategoriesInEdition, articles, articlesGet, articlesSet, cancelCategoriesEdition, categories /*: Function */, currentCategoryGet, currentCategorySet, currentSelectCategoriesSide /*: oSign */, drawSelectCategoriesSide, editCategory /*: oSign */, hasCategoryMgr, isList /*: Function */, loadArticles, modeGet, modeSet, pageNumBtnClickHandler, resetCategoriesEdition, restoreCategoriesEdition, selectedCategories, storeArticle, stub, updateCategoriesLight;
+
+                                                                                                                                                                                                                                                                                    ^^^^^^^^^^^^^^ [1]
+
+Error ---------------------------------------------------------------------------- babeled/components/Page/page.js:62:15
+
+Cannot call `initTable` because no arguments are expected by function [1]. [extra-arg]
+
+   babeled/components/Page/page.js:62:15
+
+    62|     initTable(u);
+
+                      ^
+
+References:
+
+   babeled/components/Page/page.js:344:13
+
+   344| initTable = function () {
+
+                    ^^^^^^^^^^^ [1]
+
+Error ---------------------------------------------------------------------------- babeled/components/Page/page.js:73:22
+
+Cannot use type `oSign` [1] as a value. Types are erased and don't exist at runtime. [type-as-value]
+
+   babeled/components/Page/page.js:73:22
+
+    73|   hasCategoryMgr /*: oSign */ = signalObject({
+
+                             ^^^^^
+
+References:
+
+   babeled/components/Page/page.js:308:6
+
+   308| type oSign = {
+
+             ^^^^^ [1]
+
+Error ---------------------------------------------------------------------------- babeled/components/Page/page.js:93:26
+
+Cannot call `hasCategoryMgr.get` because property `get` is missing in uninitialized variable [1]. [incompatible-use]
+
+   babeled/components/Page/page.js:93:26
+
+   93|     has = hasCategoryMgr.get(u);
+
+                                ^^^
+
+References:
+
+   babeled/components/Page/page.js:37:270
+
+   37|   var addCategory, applyCategoriesInEdition, articles, articlesGet, articlesSet, cancelCategoriesEdition, categories /*: Function */, currentCategoryGet, currentCategorySet, currentSelectCategoriesSide /*: oSign */, drawSelectCategoriesSide, editCategory /*: oSign */, hasCategoryMgr, isList /*: Function */, loadArticles, modeGet, modeSet, pageNumBtnClickHandler, resetCategoriesEdition, restoreCategoriesEdition, selectedCategories, storeArticle, stub, updateCategoriesLight;
+
+                                                                                                                                                                                                                                                                                    ^^^^^^^^^^^^^^ [1]
+
+Error ---------------------------------------------------------------------------- babeled/components/Page/page.js:98:12
+
+Cannot assign object literal to `copy[id]` because an index signature declaring the expected key / value type is missing
+
+in object literal [1]. [prop-missing]
+
+   babeled/components/Page/page.js:98:12
+
+   98|       copy[id] = {
+
+                  ^^
+
+References:
+
+   babeled/components/Page/page.js:95:12
+
+   95|     copy = {};
+
+                  ^^ [1]
+
+Error --------------------------------------------------------------------------- babeled/components/Page/page.js:110:50
+
+Cannot call `selectedCategories` because no arguments are expected by function [1]. [extra-arg]
+
+   babeled/components/Page/page.js:110:50
+
+   110|   editCategory = signalObject(selectedCategories(u));
+
+                                                         ^
+
+References:
+
+   babeled/components/Page/page.js:91:24
+
+    91|   selectedCategories = function () {
+
+                               ^^^^^^^^^^^ [1]
+
+Error --------------------------------------------------------------------------- babeled/components/Page/page.js:113:19
+
+Cannot use type `oSign` [1] as a value. Types are erased and don't exist at runtime. [type-as-value]
+
+   babeled/components/Page/page.js:113:19
+
+   113|   addCategory /*: oSign */ = signalObject({
+
+                          ^^^^^
+
+References:
+
+   babeled/components/Page/page.js:308:6
+
+   308| type oSign = {
+
+             ^^^^^ [1]
+
+Error --------------------------------------------------------------------------- babeled/components/Page/page.js:130:14
+
+Cannot return `addCategory` because uninitialized variable [1] is incompatible with `oSign` [2]. [incompatible-return]
+
+   babeled/components/Page/page.js:130:14
+
+   130|       return addCategory;
+
+                     ^^^^^^^^^^^
+
+References:
+
+   babeled/components/Page/page.js:37:7
+
+    37|   var addCategory, applyCategoriesInEdition, articles, articlesGet, articlesSet, cancelCategoriesEdition, categories /*: Function */, currentCategoryGet, currentCategorySet, currentSelectCategoriesSide /*: oSign */, drawSelectCategoriesSide, editCategory /*: oSign */, hasCategoryMgr, isList /*: Function */, loadArticles, modeGet, modeSet, pageNumBtnClickHandler, resetCategoriesEdition, restoreCategoriesEdition, selectedCategories, storeArticle, stub, updateCategoriesLight;
+
+              ^^^^^^^^^^^ [1]
+
+   babeled/components/Page/page.js:126:45
+
+   126|   categories = function (v /*: void */) /*: oSign  */{
+
+                                                    ^^^^^ [2]
+
+Error --------------------------------------------------------------------------- babeled/components/Page/page.js:154:12
+
+Cannot assign object literal to `dest[id]` because an index signature declaring the expected key / value type is missing
+
+in object literal [1]. [prop-missing]
+
+   babeled/components/Page/page.js:154:12
+
+   154|       dest[id] = {};
+
+                   ^^
+
+References:
+
+   babeled/components/Page/page.js:151:12
+
+   151|     dest = {};
+
+                   ^^ [1]
+
+Error --------------------------------------------------------------------------- babeled/components/Page/page.js:170:41
+
+Cannot call `selectedCategories` because no arguments are expected by function [1]. [extra-arg]
+
+   babeled/components/Page/page.js:170:41
+
+   170|     editCategory.set(selectedCategories(u));
+
+                                                ^
+
+References:
+
+   babeled/components/Page/page.js:91:24
+
+    91|   selectedCategories = function () {
+
+                               ^^^^^^^^^^^ [1]
+
+Error --------------------------------------------------------------------------- babeled/components/Page/page.js:179:41
+
+Cannot call `selectedCategories` because no arguments are expected by function [1]. [extra-arg]
+
+   babeled/components/Page/page.js:179:41
+
+   179|     editCategory.set(selectedCategories(u));
+
+                                                ^
+
+References:
+
+   babeled/components/Page/page.js:91:24
+
+    91|   selectedCategories = function () {
+
+                               ^^^^^^^^^^^ [1]
+
+Error --------------------------------------------------------------------------- babeled/components/Page/page.js:183:41
+
+Cannot call `selectedCategories` because no arguments are expected by function [1]. [extra-arg]
+
+   babeled/components/Page/page.js:183:41
+
+   183|     editCategory.set(selectedCategories(u));
+
+                                                ^
+
+References:
+
+   babeled/components/Page/page.js:91:24
+
+    91|   selectedCategories = function () {
+
+                               ^^^^^^^^^^^ [1]
+
+Error --------------------------------------------------------------------------- babeled/components/Page/page.js:187:20
+
+Cannot call `hasCategoryMgr.set` because property `set` is missing in uninitialized variable [1]. [incompatible-use]
+
+   babeled/components/Page/page.js:187:20
+
+   187|     hasCategoryMgr.set(editCategory.get(u));
+
+                           ^^^
+
+References:
+
+   babeled/components/Page/page.js:37:270
+
+    37|   var addCategory, applyCategoriesInEdition, articles, articlesGet, articlesSet, cancelCategoriesEdition, categories /*: Function */, currentCategoryGet, currentCategorySet, currentSelectCategoriesSide /*: oSign */, drawSelectCategoriesSide, editCategory /*: oSign */, hasCategoryMgr, isList /*: Function */, loadArticles, modeGet, modeSet, pageNumBtnClickHandler, resetCategoriesEdition, restoreCategoriesEdition, selectedCategories, storeArticle, stub, updateCategoriesLight;
+
+                                                                                                                                                                                                                                                                                     ^^^^^^^^^^^^^^ [1]
+
+Error --------------------------------------------------------------------------- babeled/components/Page/page.js:319:22
+
+Cannot use `oSign` as a type. A name can be used as a type only if it refers to a type, interface, class, or enum
+
+definition. To get the type of a non-class value, use `typeof`. [value-as-type]
+
+   319|   var get, oSign /*: oSign */, set;
+
+                             ^^^^^
+
+Error ------------------------------------------ babeled/components/SelectCategoriesSide/select-categories-side.js:25:42
+
+Cannot call `entries.map` with function bound to `callbackfn` because array type [1] is incompatible with tuple type [2]
+
+in the first parameter. [incompatible-call]
+
+   babeled/components/SelectCategoriesSide/select-categories-side.js:25:42
+
+    25|     return entries.map(function (ent /*: Array<[string, mixed]> */) {
+
+                                                 ^^^^^^^^^^^^^^^^^^^^^^ [1]
+
+References:
+
+   /tmp/flow/flowlib_5ffe709cb9c43751_1000/core.js:128:49
+
+   128|     static entries(object: interface {}): Array<[string, mixed]>;
+
+                                                        ^^^^^^^^^^^^^^^ [2]
+
+Error ------------------------------------------- babeled/components/SelectCategoriesSide/select-categories-side.js:28:9
+
+Property `label` is missing in `$ReadOnlyArray` [1]. [prop-missing]
+
+   babeled/components/SelectCategoriesSide/select-categories-side.js:28:9
+
+   28|         label,
+
+               ^^^^^
+
+References:
+
+   babeled/components/SelectCategoriesSide/select-categories-side.js:25:48
+
+   25|     return entries.map(function (ent /*: Array<[string, mixed]> */) {
+
+                                                      ^^^^^^^^^^^^^^^ [1]
+
+Error ------------------------------------------- babeled/components/SelectCategoriesSide/select-categories-side.js:29:9
+
+Property `checked` is missing in `$ReadOnlyArray` [1]. [prop-missing]
+
+   babeled/components/SelectCategoriesSide/select-categories-side.js:29:9
+
+   29|         checked
+
+               ^^^^^^^
+
+References:
+
+   babeled/components/SelectCategoriesSide/select-categories-side.js:25:48
+
+   25|     return entries.map(function (ent /*: Array<[string, mixed]> */) {
+
+                                                      ^^^^^^^^^^^^^^^ [1]

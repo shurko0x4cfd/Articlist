@@ -21,12 +21,13 @@ export default CategoryItem = (props ###: any ###) ###: HTMLElement ### ->
 
 	# Этот вариант не допускает множественный выбор категорий
 	checkBoxClickHandlerLight =
-		({ target } ###: {target: {id: string}} ###) ->
+		({ target } ###: {target: {id: string}} ###) ###: void ### ->
 			id = target.id
 			props.upd(id)
 
 			props.mode() == 'list' &&
 				props.currentCategorySet id
+			u
 
 	<li className='category-item'>
 		<input className='category-item__chbox'

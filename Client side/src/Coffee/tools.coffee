@@ -55,7 +55,7 @@ scroll ###: Function  ### = (...args ###: Array<mixed> ###,
  * @param  {string} tagname
  * @return {number}
  */`
-scrollUp ###: Function ### = (tagname ###: string ### = 'html') ###: number ### ->
+scrollUp ###: Function ### = (tagname ###: string ### = 'html') ###: TimeoutID ### ->
 	setTimeout (v ###: void ###) ###: mixed ### ->
 		scroll 0, 0, first document.getElementsByTagName tagname
 

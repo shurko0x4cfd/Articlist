@@ -64,7 +64,7 @@ scroll = function(...args/*: Array<mixed> */)/*: mixed */ {
  * @return {number}
  */;
 
-scrollUp = function(tagname/*: string */ = 'html')/*: number */ {
+scrollUp = function(tagname/*: string */ = 'html')/*: TimeoutID */ {
   return setTimeout(function(v/*: void */)/*: mixed */ {
     return scroll(0, 0, first(document.getElementsByTagName(tagname)));
   });

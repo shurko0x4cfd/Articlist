@@ -1,6 +1,6 @@
 {
 	"name": "articlist",
-	"version": "0.0.2",
+	"version": "0.0.3",
 	"description": "In order to self-education",
 	"type": "module",
 	"scripts": {
@@ -10,7 +10,7 @@
 		"serve": "vite preview",
 		"recompile-coffee": "./scripts/recompile-coffee.sh",
 		"babelize": "./node_modules/.bin/babel src --out-dir babeled",
-		"flow": "node ./node_modules/flow-bin/cli.js ./babeled/.flowconfig"
+		"flow": "node ./node_modules/flow-bin/cli.js ./babeled/.flowconfig --show-all-errors"
 	},
 	"license": "MIT",
 	"devDependencies": {

@@ -4,7 +4,8 @@
 import { createSignal } from "solid-js"
 import { createStore } from "solid-js/store"
 
-import '../../shared.less'
+import '../shared/styles/shared.less'
+import '../shared/mixin-blocks/placer.less'
 import './page.less'
 import '../../assets/funnel.svg'
 import '../../assets/add-article.png'
@@ -82,10 +83,11 @@ export default Page ###: Function ### = \
 	selectedCategories = ->
 		has = hasCategoryMgr.get u
 		ids = Object.keys has
-		copy ###: {[string]: string} ### = { id: '' }
+		copy ###: {[string]: string} ### = {}
 
 		for id in ids
 			copy[id] = { ...(has[id] || {}) }
+		cl copy
 		copy
 
 	`/**
@@ -181,8 +183,8 @@ export default Page ###: Function ### = \
 		loadArticles '&page=' + pageNum, '&category=' + currentCategoryGet u
 
 	
-	<div className='page'>
-		<Header />
+	<div className='page placer sizer'>
+		<Header cNames=' placer__moveable_padding-left_32px sizer__sizeable_min-height_128px ' />
 		<Show when={isList()}>
 			<PaginationBar
 				categoriesState={currentSelectCategoriesSide}
@@ -196,12 +198,12 @@ export default Page ###: Function ### = \
 		<Show when={drawSelectCategoriesSide()}>
 			<SelectCategoriesSide categories={categories()}
 				mode={modeGet}
-				draw={drawSelectCategoriesSide}
 				upd={updateCategoriesLight.bind(null, categories())}
 				cancel={cancelCategoriesEdition}
 				reset={resetCategoriesEdition}
 				apply={applyCategoriesInEdition}
-				{...{ currentCategorySet }} />
+				{...{ currentCategorySet }}
+			/>
 		</Show>
 
 		<Show when={isList()}>
@@ -236,9 +238,10 @@ export default Page ###: Function ### = \
 	
 
 `/*::
-type oSign =
-	get: Function
+type oSign = {
+	get: Function,
 	set: Function
+}
 */`
 
 

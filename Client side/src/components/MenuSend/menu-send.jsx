@@ -16,9 +16,9 @@ export default MenuSend = function(props/*: any */)/*: HTMLElement */ {
       return;
     }
     article = evt != null ? (ref3 = evt.target) != null ? (ref4 = ref3.parentNode) != null ? (ref5 = ref4.parentNode) != null ? ref5.parentNode : void 0 : void 0 : void 0 : void 0;
-    title = ((ref6 = article.getElementsByClassName('credits__editable-title')[ONLY]) != null ? ref6.value : void 0) || '';
-    author = article.getElementsByClassName('credits__editable-author-name')[ONLY].value;
-    text = article.getElementsByTagName('textarea')[ONLY].value;
+    title = (article != null ? (ref6 = article.getElementsByClassName('credits__editable-title')[ONLY]) != null ? ref6.value : void 0 : void 0) || '';
+    author = (article != null ? article.getElementsByClassName('credits__editable-author-name')[ONLY].value : void 0) || '';
+    text = (article != null ? article.getElementsByTagName('textarea')[ONLY].value : void 0) || '';
     categories = props.categories.get();
     ids = Object.keys(categories);
     category_id = '0';

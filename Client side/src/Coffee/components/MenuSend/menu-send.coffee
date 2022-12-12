@@ -12,31 +12,31 @@ export default MenuSend ###: Function ### = \
 			(article ###: Element ###)
 			if !evt?.target?.parentElement?.parentNode?.parentNode
 				return
-			article = evt?.target?.parentNode?.parentNode?.parentNode;
+			article = evt?.target?.parentNode?.parentNode?.parentNode
 
 			title ###: string ### = article
-				.getElementsByClassName('credits__editable-title')[ONLY]?.value || '';
+				?.getElementsByClassName('credits__editable-title')[ONLY]?.value || ''
 
 			author = article
-				.getElementsByClassName('credits__editable-author-name')[ONLY].value;
-			text = article.getElementsByTagName('textarea')[ONLY].value;
-			categories = props.categories.get();
-			ids = Object.keys(categories);
+				?.getElementsByClassName('credits__editable-author-name')[ONLY].value || ''
+			text = article?.getElementsByTagName('textarea')[ONLY].value || ''
+			categories = props.categories.get()
+			ids = Object.keys(categories)
 
-			category_id = '0';
+			category_id = '0'
 			for id in ids
 				if categories[id].checked
-					category_id = id;
+					category_id = id
 
-			category_title = categories[category_id] || {};
-			category_title = category_title.label || 'none';
+			category_title = categories[category_id] || {}
+			category_title = category_title.label || 'none'
 
 			if (category_title == 'none')
-				category_id = '0';
+				category_id = '0'
 
-			props.send(title, category_id, category_title, author, text);
+			props.send(title, category_id, category_title, author, text)
 
-			props.modeSet('list');
+			props.modeSet('list')
 
 		<div className='menu-send menu-send_theme_1'>
 			<div className='menu-send__buttons menu-send__buttons_theme_1'>
