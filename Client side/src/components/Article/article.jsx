@@ -1,7 +1,7 @@
 /* @flow */
 var Article/*: Function */;
 
-import './article_theme_1.less';
+import './_theme_1.less';
 
 import '../shared/mixin-blocks/placer.less';
 
