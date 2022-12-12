@@ -9,8 +9,8 @@
 		"build": "vite build",
 		"serve": "vite preview",
 		"recompile-coffee": "./scripts/recompile-coffee.sh",
-		"babelize": "./node_modules/.bin/babel src --out-dir babeled",
-		"flow": "node ./node_modules/flow-bin/cli.js ./babeled/.flowconfig --show-all-errors"
+		"transolid": "./node_modules/.bin/babel src --out-dir tmp/flow-type-check",
+		"flow-type-check": "node ./node_modules/flow-bin/cli.js ./config/.flowconfig --show-all-errors > logs/flow/flow-full-out-$(date +%F_%H-%M).log"
 	},
 	"license": "MIT",
 	"devDependencies": {
